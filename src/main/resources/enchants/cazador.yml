@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/cazador.yml — Cazador
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: cazador
+enabled: true
+
+display-name: "Cazador"
+tier: mitico
+max-level: 4
+icon: CROSSBOW
+
+applicable-to:
+  - BOW
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Cazador {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Tus disparos hieren y frenan"
+  - "<gray>a la presa."
+  - "<dark_gray>│ <gray>Probabilidad: <white>18% + 6%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>3.5 + 1.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Cazador"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 18
+  chance-scale: 6
+  actions:
+    - type: damage
+      target: victim
+      value-base: 3.5
+      value-scale: 1.5
+    - type: potion
+      target: victim
+      value: Slowness
+      amplifier: 1
+      seconds-base: 3
+      seconds-scale: 1
+    - type: sound
+      target: victim
+      value: ENTITY_ARROW_HIT_PLAYER
+      volume: 0.7
+      pitch: 1.3

@@ -1,0 +1,51 @@
+# ============================================================
+#  skills/fe_topo.yml — Skill nativa de Fabled 5
+#  Topo · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Topo:
+  name: FE_Topo
+  type: Dynamic
+  max-level: 2
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: CARVED_PUMPKIN
+  icon-key: ''
+  icon-lore:
+  - '&7&lTopo &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    BLOCK_BREAK:
+      type: trigger
+      data:
+        material: Any
+        data: '-1'
+      children:
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: NightVision
+            ambient: 'false'
+            tier-base: '0'
+            tier-scale: '0'
+            seconds-base: '8'
+            seconds-scale: '4'

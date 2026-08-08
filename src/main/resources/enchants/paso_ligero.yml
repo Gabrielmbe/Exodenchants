@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/paso_ligero.yml — Velocidad al recibir daño
+# ============================================================
+
+id: paso_ligero
+enabled: true
+
+display-name: "Paso Ligero"
+tier: comun
+max-level: 2
+icon: FEATHER
+
+applicable-to:
+  - BOOTS
+
+conflicts: []
+
+lore-line: "<gray>Paso Ligero {nivel_romano}"
+
+description:
+  - "<gray>Ganas velocidad al recibir un golpe."
+  - "<dark_gray>│ <gray>Duración: <white>3s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_PasoLigero"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: self
+      value: Speed
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1

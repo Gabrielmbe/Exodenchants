@@ -1,0 +1,83 @@
+# ============================================================
+#  FabledCustomEnchants — modules/drag_and_drop.yml
+#  Mecánica de aplicación: Libro de Encantamiento sobre ítem
+# ------------------------------------------------------------
+#  Capa puente: Fabled 5 expone triggers de mundo (Left Click,
+#  Right Click, Physical Damage...), pero no un trigger nativo
+#  de click de inventario. Este módulo configura el listener
+#  ligero de InventoryClickEvent que ejecuta la aplicación y
+#  delega el EFECTO del encantamiento a la skill de Fabled.
+# ============================================================
+
+enabled: true
+
+trigger:
+  event: "inventory-click"
+  # Clicks aceptados con el libro en el cursor
+  clicks: [LEFT, RIGHT]
+  # Cancela el comportamiento vanilla del click al detectar un libro válido
+  cancel-vanilla: true
+  # Inventarios donde se permite aplicar (jugador, cofres, ender chest)
+  allowed-inventories: [PLAYER, CHEST, ENDER_CHEST]
+
+# ------------------------------------------------------------
+# VALIDACIÓN — se lee SOLO de Data Components, nunca del Lore
+# ------------------------------------------------------------
+validation:
+  cursor-must-be: "ENCHANTED_BOOK"
+  # El libro debe tener TODAS estas claves en su custom_data
+  # (nombres definidos en config.yml → storage.keys)
+  require-keys:
+    - enchant-id
+    - enchant-level
+    - success-rate
+    - destroy-rate
+  # Comprueba enchants/<id>.yml → applicable-to contra el ítem destino
+  check-applicable-groups: true
+  # Respeta limits.max-enchants-per-item y allow-downgrade de config.yml
+  respect-global-limits: true
+
+# ------------------------------------------------------------
+# LÓGICA DE PROBABILIDAD
+# Tirada principal: entero aleatorio 1-100.
+#   roll <= {exito}  → ÉXITO
+#   roll >  {exito}  → FALLO (y se evalúa la tirada de ruptura)
+# ------------------------------------------------------------
+roll:
+  formula: "random_int(1,100) <= {exito}"
+
+  on-success:
+    - "apply-enchant"        # Escribe fe_id + fe_level en el custom_data del ítem
+    - "register-skill"       # Vincula la skill de Fabled (enchants/<id>.yml → fabled-skill)
+    - "append-lore"          # Añade la línea estética (enchants/<id>.yml → lore-line)
+    - "consume-book"
+    - "sound: apply-success"       # BLOCK_ANVIL_USE (config.yml)
+    - "particles: apply-success"
+    - "message: apply-success"
+
+  on-fail:
+    - "consume-book"
+    - "sound: apply-fail"
+    - "particles: apply-fail"      # Partículas de ruptura del libro (item/BOOK)
+    - "message: apply-fail"
+    - "roll-destroy"               # Segunda tirada: random_int(1,100) <= {ruptura}
+
+  on-destroy:
+    - "destroy-item"
+    - "sound: item-destroyed"
+    - "particles: item-destroyed"
+    - "message: item-destroyed"
+
+# ------------------------------------------------------------
+# GRUPOS DE ÍTEMS APLICABLES (usados por enchants/*.yml)
+# ------------------------------------------------------------
+item-groups:
+  SWORD:   [WOODEN_SWORD, STONE_SWORD, IRON_SWORD, GOLDEN_SWORD, DIAMOND_SWORD, NETHERITE_SWORD]
+  AXE:     [WOODEN_AXE, STONE_AXE, IRON_AXE, GOLDEN_AXE, DIAMOND_AXE, NETHERITE_AXE]
+  PICKAXE: [WOODEN_PICKAXE, STONE_PICKAXE, IRON_PICKAXE, GOLDEN_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE]
+  HELMET:  [LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET]
+  CHESTPLATE: [LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE, GOLDEN_CHESTPLATE, DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE]
+  LEGGINGS: [LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS, GOLDEN_LEGGINGS, DIAMOND_LEGGINGS, NETHERITE_LEGGINGS]
+  BOOTS:   [LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, DIAMOND_BOOTS, NETHERITE_BOOTS]
+  BOW:     [BOW, CROSSBOW]
+  MACE:    [MACE]

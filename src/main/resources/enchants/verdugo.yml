@@ -1,0 +1,48 @@
+# ============================================================
+#  enchants/verdugo.yml — Verdugo
+# ============================================================
+
+id: verdugo
+enabled: true
+
+display-name: "Verdugo"
+tier: legendario
+max-level: 3
+icon: WITHER_SKELETON_SKULL
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Verdugo {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Al matar, te curas y ganas fuerza."
+  - "<dark_gray>│ <gray>Curación: <white>2.0 + 1.0</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Fuerza: <white>5s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_Verdugo"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: kill
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: heal
+      target: self
+      value-base: 2
+      value-scale: 1
+    - type: potion
+      target: self
+      value: Strength
+      amplifier: 0
+      seconds-base: 5
+      seconds-scale: 2
+    - type: particle
+      target: self
+      value: Witch
+      count: 20

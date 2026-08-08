@@ -1,0 +1,46 @@
+# ============================================================
+#  enchants/tormenta.yml — Tormenta
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: tormenta
+enabled: true
+
+display-name: "Tormenta"
+tier: mitico
+max-level: 4
+icon: TRIDENT
+
+applicable-to:
+  - SWORD
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Tormenta {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Desata una tormenta sobre tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>3.0 + 1.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Tormenta"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 12
+  chance-scale: 4
+  actions:
+    - type: lightning
+      target: victim
+    - type: damage
+      target: victim
+      value-base: 3
+      value-scale: 1.5
+    - type: sound
+      target: victim
+      value: ENTITY_LIGHTNING_BOLT_THUNDER
+      volume: 0.8
+      pitch: 1.1

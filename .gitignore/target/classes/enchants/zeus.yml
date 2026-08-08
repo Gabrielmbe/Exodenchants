@@ -1,0 +1,47 @@
+# ============================================================
+#  enchants/zeus.yml — Probabilidad de invocar un rayo
+# ============================================================
+
+id: zeus
+enabled: true
+
+display-name: "Zeus"
+tier: legendario
+max-level: 3
+icon: NETHER_STAR
+
+applicable-to:
+  - SWORD
+  - AXE
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Zeus {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de invocar un rayo"
+  - "<gray>sobre tu objetivo al golpear."
+  - "<dark_gray>│ <gray>Probabilidad: <white>8% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>2.0 + 1.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Zeus"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 8
+  chance-scale: 4
+  actions:
+    - type: lightning
+      target: victim
+    - type: damage
+      target: victim
+      value-base: 2
+      value-scale: 1
+    - type: sound
+      target: victim
+      value: ENTITY_LIGHTNING_BOLT_THUNDER
+      volume: 0.8
+      pitch: 1.2

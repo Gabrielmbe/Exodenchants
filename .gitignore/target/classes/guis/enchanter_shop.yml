@@ -1,0 +1,184 @@
+# ============================================================
+#  guis/enchanter_shop.yml — Tienda de libros por tier
+# ------------------------------------------------------------
+#  fila 2 (11-15)    = los cinco tiers
+#  fila 3 (19-25)    = franja decorativa
+#  fila 4 (29·31·33) = polvos / categorías / catálogo
+#  fila 5 (40)       = balance   ·   fila 6 (49) = volver
+# ============================================================
+
+menu:
+  id: enchanter_shop
+  title: "<dark_gray>✦ <gradient:#7B2CBF:#C77DFF>ᴛɪᴇɴᴅᴀ ᴅᴇ ʟɪʙʀᴏꜱ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: PURPLE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53, 19, 20, 21, 22, 23, 24, 25]
+
+items:
+
+  libro-comun:
+    slot: 11
+    material: BOOK
+    name: "✦ <gray>ʟɪʙʀᴏ ᴄᴏᴍúɴ"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>60-95%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>0-5%"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>I"
+      - "<dark_gray>❘ <gray>Pool <dark_gray>· <white>{pool_comun} encantos"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>$2,500"
+      - ""
+      - "<gray>➜ Click para comprar"
+    actions:
+      - "buy-book: { tier: comun, price: 2500 }"
+
+  libro-raro:
+    slot: 12
+    material: ENCHANTED_BOOK
+    name: "✦ <gradient:#7B2CBF:#C77DFF>ʟɪʙʀᴏ ʀᴀʀᴏ</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>35-70%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>5-15%"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>II"
+      - "<dark_gray>❘ <gray>Pool <dark_gray>· <white>{pool_raro} encantos"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>$9,500"
+      - ""
+      - "<#C77DFF>➜ Click para comprar"
+    actions:
+      - "buy-book: { tier: raro, price: 9500 }"
+
+  libro-legendario:
+    slot: 13
+    material: ENCHANTED_BOOK
+    name: "✦ <gradient:#FFD166:#FFB703>ʟɪʙʀᴏ ʟᴇɢᴇɴᴅᴀʀɪᴏ</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>15-45%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>15-35%"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>III"
+      - "<dark_gray>❘ <gray>Pool <dark_gray>· <white>{pool_legendario} encantos"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>$28,000"
+      - ""
+      - "<#FFB703>➜ Click para comprar"
+    actions:
+      - "buy-book: { tier: legendario, price: 28000 }"
+
+  libro-mitico:
+    slot: 14
+    material: ENCHANTED_BOOK
+    name: "✦ <gradient:#F72585:#B5179E>ʟɪʙʀᴏ ᴍíᴛɪᴄᴏ</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>10-30%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>25-45%"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>IV"
+      - "<dark_gray>❘ <gray>Pool <dark_gray>· <white>{pool_mitico} encantos"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>$350,000"
+      - "<dark_gray>❘ <#F72585>⚑ Requisito <dark_gray>· <white>150 pts"
+      - "<dark_gray>❘ <gray>Tus puntos <dark_gray>· <white>{score}"
+      - ""
+      - "<#F72585>➜ Click para comprar"
+    actions:
+      - "buy-book: { tier: mitico, price: 350000, min-score: 150 }"
+
+  libro-divino:
+    slot: 15
+    material: ENCHANTED_BOOK
+    name: "✦ <gradient:#00F5D4:#4CC9F0>ʟɪʙʀᴏ ᴅɪᴠɪɴᴏ</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>5-20%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>35-60%"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>V"
+      - "<dark_gray>❘ <gray>Pool <dark_gray>· <white>{pool_divino} encantos"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>$1,500,000"
+      - "<dark_gray>❘ <#00F5D4>⚑ Requisito <dark_gray>· <white>600 pts"
+      - "<dark_gray>❘ <gray>Tus puntos <dark_gray>· <white>{score}"
+      - ""
+      - "<#00F5D4>➜ Click para comprar"
+    actions:
+      - "buy-book: { tier: divino, price: 1500000, min-score: 600 }"
+
+  polvos:
+    slot: 29
+    material: GLOWSTONE_DUST
+    name: "<gradient:#48CAE4:#90E0EF>✦ ᴘᴏʟᴠᴏꜱ ʏ ᴇꜱᴇɴᴄɪᴀꜱ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Baja la <white>ruptura</white> o sube el"
+      - "<gray><white>éxito</white> <gray>antes de aplicar."
+      - ""
+      - "<gray>Imprescindible en Mítico y Divino."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#48CAE4>➜ Click para abrir"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: dust_shop"
+
+  categorias:
+    slot: 31
+    material: CHEST
+    name: "<white>✦ ᴄᴀᴛᴇɢᴏʀíᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Filtra los encantos por"
+      - "<gray>tipo de ítem."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para filtrar"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: categories"
+
+  catalogo:
+    slot: 33
+    material: AMETHYST_SHARD
+    name: "<#C77DFF>✦ ᴄᴀᴛáʟᴏɢᴏ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Los <white>{total}</white> <gray>encantamientos"
+      - "<gray>con sus niveles e ítems."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para explorar"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: catalog"
+
+  balance:
+    slot: 40
+    material: SUNFLOWER
+    name: "<white>✦ ᴛᴜ ʙᴀʟᴀɴᴄᴇ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Dinero <dark_gray>· <white>${balance}"
+      - "<dark_gray>❘ <gray>Tu puesto <dark_gray>· <white>{rank}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  volver:
+    slot: 49
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "open-gui: main_menu"

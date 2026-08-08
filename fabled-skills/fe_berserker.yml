@@ -1,0 +1,84 @@
+# ============================================================
+#  skills/fe_berserker.yml — Skill nativa de Fabled 5
+#  Berserker · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Berserker:
+  name: FE_Berserker
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: BREEZE_ROD
+  icon-key: ''
+  icon-lore:
+  - '&d&lBerserker &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    KILL:
+      type: trigger
+      data:
+
+      children:
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Strength
+            ambient: 'false'
+            tier-base: '1'
+            tier-scale: '0'
+            seconds-base: '6'
+            seconds-scale: '2'
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Speed
+            ambient: 'false'
+            tier-base: '1'
+            tier-scale: '0'
+            seconds-base: '6'
+            seconds-scale: '2'
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Resistance
+            ambient: 'false'
+            tier-base: '0'
+            tier-scale: '0'
+            seconds-base: '6'
+            seconds-scale: '2'
+        PARTICLE:
+          type: mechanic
+          data:
+            counts: 'true'
+            particle: Flame
+            material: DIRT
+            type: Sphere
+            radius: '1'
+            particles-base: '15'
+            particles-scale: '2'
+            frequency: '0.0'
+            forward: '0'
+            upward: '1'
+            right: '0'

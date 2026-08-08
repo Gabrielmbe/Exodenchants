@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/toxina.yml — Envenena al objetivo al golpear
+# ============================================================
+
+id: toxina
+enabled: true
+
+display-name: "Toxina"
+tier: raro
+max-level: 3
+icon: SPIDER_EYE
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#52B788:#95D5B2>Toxina {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Envenena a tu objetivo al golpear."
+  - "<dark_gray>│ <gray>Duración: <white>3s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_Toxina"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: victim
+      value: Poison
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1

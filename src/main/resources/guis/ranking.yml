@@ -1,0 +1,128 @@
+# ============================================================
+#  guis/ranking.yml — RANKING DE ENCANTADORES
+# ------------------------------------------------------------
+#  Podio en la fila 2-3 y puestos 4-7 en la fila 4. Los datos
+#  salen de stats.yml; la puntuación por tier se define en
+#  config.yml -> ranking.points.
+#
+#  Placeholders equivalentes de PlaceholderAPI:
+#    %fce_top_name_1% · %fce_top_score_1% · %fce_rank% · %fce_score%
+# ============================================================
+
+menu:
+  id: ranking
+  title: "<dark_gray>✦ <gradient:#FFD166:#FFB703>ʀᴀɴᴋɪɴɢ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: YELLOW_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53, 19, 25]
+
+items:
+
+  primero:
+    slot: 13
+    material: GOLDEN_HELMET
+    name: "<gradient:#FFD166:#FFB703>① ᴘʀɪᴍᴇʀᴏ</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Jugador <dark_gray>· <white>{top_name_1}"
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_1}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  segundo:
+    slot: 21
+    material: IRON_HELMET
+    name: "<white>② ꜱᴇɢᴜɴᴅᴏ"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Jugador <dark_gray>· <white>{top_name_2}"
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_2}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  tercero:
+    slot: 23
+    material: CHAINMAIL_HELMET
+    name: "<#CD7F32>③ ᴛᴇʀᴄᴇʀᴏ"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Jugador <dark_gray>· <white>{top_name_3}"
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_3}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  puesto-4:
+    slot: 28
+    material: PAPER
+    name: "<gray>4º <white>{top_name_4}"
+    lore:
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_4}"
+    actions:
+      - "sound: gui-click"
+
+  puesto-5:
+    slot: 30
+    material: PAPER
+    name: "<gray>5º <white>{top_name_5}"
+    lore:
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_5}"
+    actions:
+      - "sound: gui-click"
+
+  puesto-6:
+    slot: 32
+    material: PAPER
+    name: "<gray>6º <white>{top_name_6}"
+    lore:
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_6}"
+    actions:
+      - "sound: gui-click"
+
+  puesto-7:
+    slot: 34
+    material: PAPER
+    name: "<gray>7º <white>{top_name_7}"
+    lore:
+      - "<dark_gray>❘ <gray>Puntos <dark_gray>· <white>{top_score_7}"
+    actions:
+      - "sound: gui-click"
+
+  mi-posicion:
+    slot: 40
+    material: PLAYER_HEAD
+    name: "<white>✦ ᴛᴜ ᴘᴏꜱɪᴄɪóɴ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Puesto <dark_gray>· <white>{rank}"
+      - "<dark_gray>❘ <gray>Puntuación <dark_gray>· <white>{score}"
+      - "<dark_gray>❘ <gray>Combo activo <dark_gray>· {combo}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Puntos por tier: <white>Común 1<gray>, <#C77DFF>Raro 3<gray>,"
+      - "<#FFB703>Legendario 8<gray>, <#F72585>Mítico 20<gray>, <#00F5D4>Divino 50<gray>."
+    actions:
+      - "sound: gui-click"
+
+  volver:
+    slot: 49
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "open-gui: main_menu"

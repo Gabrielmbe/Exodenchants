@@ -1,0 +1,49 @@
+# ============================================================
+#  enchants/ejecucion.yml — Ejecución
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: ejecucion
+enabled: true
+
+display-name: "Ejecución"
+tier: mitico
+max-level: 4
+icon: WITHER_SKELETON_SKULL
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Ejecución {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Golpe de ejecución con daño real"
+  - "<gray>que atraviesa cualquier defensa."
+  - "<dark_gray>│ <gray>Probabilidad: <white>10% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño real: <white>5.0 + 2.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Ejecucion"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 10
+  chance-scale: 4
+  actions:
+    - type: damage
+      target: victim
+      value-base: 5
+      value-scale: 2.5
+      true-damage: true
+    - type: particle
+      target: victim
+      value: Dust
+      count: 15
+    - type: sound
+      target: victim
+      value: ENTITY_WITHER_HURT
+      volume: 0.6
+      pitch: 0.8

@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/vetadora.yml — Vetadora
+#  Tier LEGENDARIO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: vetadora
+enabled: true
+
+display-name: "Vetadora"
+tier: legendario
+max-level: 3
+icon: DIAMOND_PICKAXE
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Vetadora {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Extrae la <white>veta completa</white> del mineral"
+  - "<gray>con un solo golpe."
+  - "<dark_gray>│ <gray>Bloques: <white>4 + 4</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: vein_miner
+  value-base: 4
+  value-scale: 4
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

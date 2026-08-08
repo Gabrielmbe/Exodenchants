@@ -1,0 +1,36 @@
+# ============================================================
+#  enchants/amortiguar.yml — Amortiguar
+# ============================================================
+
+id: amortiguar
+enabled: true
+
+display-name: "Amortiguar"
+tier: comun
+max-level: 2
+icon: HAY_BLOCK
+
+applicable-to:
+  - BOOTS
+
+conflicts: []
+
+lore-line: "<gray>Amortiguar {nivel_romano}"
+
+description:
+  - "<gray>Recuperas vida al aterrizar de una caída."
+  - "<dark_gray>│ <gray>Curación: <white>1.0 + 0.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Amortiguar"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: land
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: heal
+      target: self
+      value-base: 1
+      value-scale: 0.5

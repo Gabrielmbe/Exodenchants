@@ -1,0 +1,45 @@
+# ============================================================
+#  enchants/avaricia.yml — Avaricia
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: avaricia
+enabled: true
+
+display-name: "Avaricia"
+tier: mitico
+max-level: 4
+icon: GOLD_BLOCK
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Avaricia {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Prisa superior mientras excavas."
+  - "<dark_gray>│ <gray>Probabilidad: <white>25% + 10%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Duración: <white>8s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_Avaricia"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: mine
+  chance-base: 25
+  chance-scale: 10
+  actions:
+    - type: potion
+      target: self
+      value: Haste
+      amplifier: 2
+      seconds-base: 8
+      seconds-scale: 2
+    - type: sound
+      target: self
+      value: BLOCK_AMETHYST_BLOCK_CHIME
+      volume: 0.5
+      pitch: 1.5

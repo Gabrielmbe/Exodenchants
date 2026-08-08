@@ -1,0 +1,49 @@
+# ============================================================
+#  enchants/juicio_final.yml — Juicio Final
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: juicio_final
+enabled: true
+
+display-name: "Juicio Final"
+tier: divino
+max-level: 5
+icon: NETHERITE_INGOT
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Juicio Final {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Sentencia irrevocable: daño real"
+  - "<gray>capaz de partir cualquier armadura."
+  - "<dark_gray>│ <gray>Probabilidad: <white>10% + 3%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño real: <white>8.0 + 4.0</white> <gray>por nivel"
+
+fabled-skill: "FE_JuicioFinal"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 10
+  chance-scale: 3
+  actions:
+    - type: damage
+      target: victim
+      value-base: 8
+      value-scale: 4
+      true-damage: true
+    - type: particle
+      target: victim
+      value: EnchantmentTable
+      count: 25
+    - type: sound
+      target: victim
+      value: BLOCK_BEACON_POWER_SELECT
+      volume: 0.9
+      pitch: 0.7

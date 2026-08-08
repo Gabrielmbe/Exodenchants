@@ -1,0 +1,41 @@
+# ============================================================
+#  enchants/contragolpe.yml — Contragolpe
+# ============================================================
+
+id: contragolpe
+enabled: true
+
+display-name: "Contragolpe"
+tier: raro
+max-level: 3
+icon: IRON_CHESTPLATE
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Contragolpe {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Devuelves daño a quien te golpea."
+  - "<dark_gray>│ <gray>Daño: <white>1.0 + 1.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Contragolpe"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: damage
+      target: victim
+      value-base: 1
+      value-scale: 1
+    - type: sound
+      target: self
+      value: ENTITY_ZOMBIE_ATTACK_IRON_DOOR
+      volume: 0.4
+      pitch: 1.5

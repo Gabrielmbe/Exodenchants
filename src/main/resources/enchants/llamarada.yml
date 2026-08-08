@@ -1,0 +1,37 @@
+# ============================================================
+#  enchants/llamarada.yml — Prende fuego al objetivo al golpear
+# ============================================================
+
+id: llamarada
+enabled: true
+
+display-name: "Llamarada"
+tier: comun
+max-level: 2
+icon: BLAZE_POWDER
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: [congelacion]
+
+lore-line: "<gray>Llamarada {nivel_romano}"
+
+description:
+  - "<gray>Prende fuego a tu objetivo al golpear."
+  - "<dark_gray>│ <gray>Duración: <white>2s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_Llamarada"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: fire
+      target: victim
+      seconds-base: 2
+      seconds-scale: 1

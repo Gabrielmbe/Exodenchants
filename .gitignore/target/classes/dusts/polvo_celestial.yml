@@ -1,0 +1,37 @@
+# ============================================================
+#  dusts/polvo_celestial.yml — Polvo Celestial
+# ------------------------------------------------------------
+#  Consumible que REDUCE el % de ruptura de un Libro de
+#  Encantamiento. Se usa arrastrando el polvo sobre el libro.
+#  El valor real viaja en Data Components (fd_id, fd_reduce);
+#  el Lore es solo estética.
+#
+#  Placeholders: {polvo} {reduccion} {precio} {color}
+# ============================================================
+
+id: polvo_celestial
+enabled: true
+
+display-name: "Polvo Celestial"
+material: PRISMARINE_CRYSTALS
+glint: true
+color: "#48CAE4"
+
+# Puntos porcentuales que resta al % de ruptura del libro
+reduce: 20
+
+# Precio en la tienda de polvos (economía vía Vault)
+price: 320000
+
+item-name: "<dark_gray>» <color:{color}>{polvo}</color> <dark_gray>«"
+
+lore:
+  - ""
+  - "<gray>Cristales pulverizados de origen"
+  - "<gray>celestial. Riesgo mínimo."
+  - ""
+  - "<dark_gray>│ <green>▼ Ruptura <dark_gray>· <white>-{reduccion}%"
+  - "<dark_gray>│ <gray>Valor <dark_gray>· <white>${precio}"
+  - ""
+  - "<dark_purple>Arrastra este polvo sobre un libro"
+  - "<dark_purple>de encantamiento para aplicarlo."

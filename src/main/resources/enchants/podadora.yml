@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/podadora.yml — Podadora
+#  Tier COMUN · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: podadora
+enabled: true
+
+display-name: "Podadora"
+tier: comun
+max-level: 2
+icon: SHEARS
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gray>Podadora {nivel_romano}"
+
+description:
+  - "<gray>Despeja el <white>follaje</white> alrededor"
+  - "<gray>al talar."
+  - "<dark_gray>│ <gray>Radio: <white>2 + 1</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: leaf_clear
+  value-base: 2
+  value-scale: 1
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

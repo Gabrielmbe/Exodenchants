@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/furia_lenador.yml — Furia del Leñador
+#  Tier MITICO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: furia_lenador
+enabled: true
+
+display-name: "Furia del Leñador"
+tier: mitico
+max-level: 3
+icon: NETHERITE_AXE
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Furia del Leñador {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Acumula <white>cargas</white> al talar y libera"
+  - "<gray>un tajo en <white>área</white> al llenarse."
+  - "<dark_gray>│ <gray>Cargas: <white>10 - 2</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: charge_blast
+  value-base: 10
+  value-scale: -2
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

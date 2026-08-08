@@ -1,0 +1,83 @@
+# ============================================================
+#  guis/black_market.yml — MERCADO NEGRO
+# ------------------------------------------------------------
+#  GUI DINÁMICA: las ofertas se generan desde
+#  modules/black_market.yml y rotan cada N horas. El icono de
+#  cada oferta ES el libro o polvo real que vas a recibir.
+# ============================================================
+
+menu:
+  id: black_market
+  title: "<dark_gray>✦ <gradient:#F72585:#B5179E>ᴍᴇʀᴄᴀᴅᴏ ɴᴇɢʀᴏ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+  dynamic: black-market
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: MAGENTA_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53, 19, 20, 21, 22, 23, 24, 25]
+
+market:
+  slots: [11, 12, 13, 14, 15]
+  entry:
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Tier <dark_gray>· {tier}"
+      - "<dark_gray>❘ <green>✔ Éxito <dark_gray>· <white>{exito}%"
+      - "<dark_gray>❘ <red>✖ Ruptura <dark_gray>· <white>{ruptura}%"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <#F72585>Descuento <dark_gray>· <white>-{descuento}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${precio}"
+      - "<dark_gray>❘ <gray>Expira en <dark_gray>· <white>{mercado_tiempo}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#F72585>➜ Click para comprar"
+
+items:
+
+  info:
+    slot: 31
+    material: CLOCK
+    name: "<gradient:#F72585:#B5179E>✦ ʀᴏᴛᴀᴄɪóɴ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>El catálogo cambia por completo"
+      - "<gray>cada pocas horas. Lo que ves ahora"
+      - "<gray>no volverá a repetirse igual."
+      - ""
+      - "<dark_gray>❘ <gray>Ofertas activas <dark_gray>· <white>{mercado_ofertas}"
+      - "<dark_gray>❘ <gray>Próxima rotación <dark_gray>· <white>{mercado_tiempo}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Los libros del mercado llegan con"
+      - "<gray>el <white>% de éxito ya mejorado<gray>."
+    actions:
+      - "sound: gui-click"
+
+  balance:
+    slot: 40
+    material: SUNFLOWER
+    name: "<white>✦ ᴛᴜ ʙᴀʟᴀɴᴄᴇ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Dinero <dark_gray>· <white>${balance}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  volver:
+    slot: 49
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "open-gui: main_menu"

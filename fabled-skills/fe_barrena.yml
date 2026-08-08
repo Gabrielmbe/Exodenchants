@@ -1,0 +1,71 @@
+# ============================================================
+#  skills/fe_barrena.yml — Skill nativa de Fabled 5
+#  Barrena · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Barrena:
+  name: FE_Barrena
+  type: Dynamic
+  max-level: 3
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHERITE_PICKAXE
+  icon-key: ''
+  icon-lore:
+  - '&7&lBarrena &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    BLOCK_BREAK:
+      type: trigger
+      data:
+        material: Any
+        data: '-1'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '18'
+            chance-scale: '8'
+          children:
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Haste
+                ambient: 'false'
+                tier-base: '2'
+                tier-scale: '0'
+                seconds-base: '6'
+                seconds-scale: '2'
+            PARTICLE:
+              type: mechanic
+              data:
+                counts: 'true'
+                particle: Crit
+                material: DIRT
+                type: Sphere
+                radius: '1'
+                particles-base: '12'
+                particles-scale: '2'
+                frequency: '0.0'
+                forward: '0'
+                upward: '1'
+                right: '0'

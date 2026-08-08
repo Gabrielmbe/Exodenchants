@@ -1,0 +1,89 @@
+# ============================================================
+#  guis/admin_item_enchants.yml — Inspector de ítem (ADMIN)
+# ------------------------------------------------------------
+#  Lista SOLO los encantamientos compatibles con el ítem
+#  inspeccionado. Click en una entrada → recibes su libro.
+#  La inspección se consume tras cada uso.
+# ============================================================
+
+menu:
+  id: admin_item_enchants
+  title: "<dark_gray>✦ <gradient:#FFD166:#FFB703>ᴄᴏᴍᴘᴀᴛɪʙʟᴇꜱ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+  dynamic: enchant-catalog
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: ORANGE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53]
+
+catalog:
+  slots: [10,11,12,13,14,15,16, 19,20,21,22,23,24,25, 28,29,30,31,32,33,34]
+  admin-give: true
+  entry:
+    name: "<dark_gray>✦ <color:{tier_color}>{enchant}</color> <dark_gray>✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Tier <dark_gray>· {tier}"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>{max_nivel_romano}"
+      - "<dark_gray>❘ <gray>Aplica a <dark_gray>· <white>{aplica}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "{descripcion}"
+      - ""
+      - "<#FFB703>➜ Click para recibir el libro"
+  group-names:
+    SWORD: "Espadas"
+    AXE: "Hachas"
+    PICKAXE: "Picos"
+    HELMET: "Cascos"
+    CHESTPLATE: "Petos"
+    LEGGINGS: "Pantalones"
+    BOOTS: "Botas"
+    BOW: "Arcos"
+    MACE: "Mazas"
+
+items:
+
+  anterior:
+    slot: 48
+    material: SPECTRAL_ARROW
+    name: "<gray>« ᴀɴᴛᴇʀɪᴏʀ"
+    lore:
+      - "<dark_gray>❘ <gray>Página <dark_gray>· <white>{pagina}<gray>/<white>{paginas}"
+    actions:
+      - "sound: gui-click"
+      - "page: prev"
+
+  info:
+    slot: 49
+    material: SPYGLASS
+    name: "<#FFB703>✦ íᴛᴇᴍ ɪɴꜱᴘᴇᴄᴄɪᴏɴᴀᴅᴏ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Ítem <dark_gray>· <white>{item}"
+      - "<dark_gray>❘ <gray>Compatibles <dark_gray>· <white>{mostrados}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>La inspección se consume tras cada"
+      - "<gray>uso. Reactívala con <white>/encantos inspect<gray>."
+    actions:
+      - "sound: gui-click"
+
+  siguiente:
+    slot: 50
+    material: SPECTRAL_ARROW
+    name: "<gray>ꜱɪɢᴜɪᴇɴᴛᴇ »"
+    lore:
+      - "<dark_gray>❘ <gray>Página <dark_gray>· <white>{pagina}<gray>/<white>{paginas}"
+    actions:
+      - "sound: gui-click"
+      - "page: next"

@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/inmortal.yml — Inmortal
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: inmortal
+enabled: true
+
+display-name: "Inmortal"
+tier: mitico
+max-level: 4
+icon: NETHERITE_HELMET
+
+applicable-to:
+  - HELMET
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Inmortal {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de volverte casi"
+  - "<gray>indestructible tras un impacto."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Curación: <white>2.0 + 1.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Inmortal"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 15
+  chance-scale: 5
+  actions:
+    - type: potion
+      target: self
+      value: Resistance
+      amplifier: 2
+      seconds-base: 4
+      seconds-scale: 1
+    - type: heal
+      target: self
+      value-base: 2
+      value-scale: 1
+    - type: sound
+      target: self
+      value: ITEM_TOTEM_USE
+      volume: 0.5
+      pitch: 1.3

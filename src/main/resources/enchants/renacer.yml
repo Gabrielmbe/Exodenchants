@@ -1,0 +1,60 @@
+# ============================================================
+#  enchants/renacer.yml — Renacer
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: renacer
+enabled: true
+
+display-name: "Renacer"
+tier: divino
+max-level: 5
+icon: ENCHANTED_GOLDEN_APPLE
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Renacer {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Renaces al borde de la muerte:"
+  - "<gray>curación masiva y regeneración."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Curación: <white>5.0 + 2.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Renacer"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 12
+  chance-scale: 4
+  actions:
+    - type: heal
+      target: self
+      value-base: 5
+      value-scale: 2
+    - type: potion
+      target: self
+      value: Regeneration
+      amplifier: 2
+      seconds-base: 5
+      seconds-scale: 1
+    - type: potion
+      target: self
+      value: Absorption
+      amplifier: 1
+      seconds-base: 6
+      seconds-scale: 2
+    - type: particle
+      target: self
+      value: Heart
+      count: 20
+    - type: sound
+      target: self
+      value: ITEM_TOTEM_USE
+      volume: 0.7
+      pitch: 1

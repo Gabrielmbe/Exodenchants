@@ -1,0 +1,43 @@
+# ============================================================
+#  enchants/fortuna_arcana.yml — Fortuna Arcana
+# ============================================================
+
+id: fortuna_arcana
+enabled: true
+
+display-name: "Fortuna Arcana"
+tier: raro
+max-level: 3
+icon: AMETHYST_CLUSTER
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Fortuna Arcana {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de prisa mejorada al minar."
+  - "<dark_gray>│ <gray>Probabilidad: <white>20% + 10%</white> <gray>por nivel"
+
+fabled-skill: "FE_FortunaArcana"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: mine
+  chance-base: 20
+  chance-scale: 10
+  actions:
+    - type: potion
+      target: self
+      value: Haste
+      amplifier: 1
+      seconds-base: 5
+      seconds-scale: 2
+    - type: sound
+      target: self
+      value: BLOCK_AMETHYST_BLOCK_CHIME
+      volume: 0.5
+      pitch: 1.3

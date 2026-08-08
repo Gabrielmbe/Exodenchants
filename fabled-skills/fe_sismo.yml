@@ -1,0 +1,87 @@
+# ============================================================
+#  skills/fe_sismo.yml — Skill nativa de Fabled 5
+#  Sismo · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Sismo:
+  name: FE_Sismo
+  type: Dynamic
+  max-level: 3
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHERITE_AXE
+  icon-key: ''
+  icon-lore:
+  - '&7&lSismo &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '10'
+            chance-scale: '5'
+          children:
+            PUSH:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: Away
+                speed-base: '2'
+                speed-scale: '0.5'
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '2'
+                value-scale: '1.5'
+                true: 'false'
+            PARTICLE:
+              type: mechanic
+              data:
+                counts: 'true'
+                particle: Explode
+                material: DIRT
+                type: Sphere
+                radius: '1'
+                particles-base: '15'
+                particles-scale: '2'
+                frequency: '0.0'
+                forward: '0'
+                upward: '1'
+                right: '0'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_GENERIC_EXPLODE
+                volume: '60'
+                pitch: '1.1'

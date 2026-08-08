@@ -1,0 +1,41 @@
+# ============================================================
+#  enchants/vampirismo.yml — Roba vida al golpear
+# ============================================================
+
+id: vampirismo
+enabled: true
+
+display-name: "Vampirismo"
+tier: raro
+max-level: 3
+icon: REDSTONE
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Vampirismo {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Roba vida al golpear a un enemigo."
+  - "<dark_gray>│ <gray>Curación: <white>1.0 + 0.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Vampirismo"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: heal
+      target: self
+      value-base: 1
+      value-scale: 0.5
+    - type: particle
+      target: self
+      value: Heart
+      count: 4

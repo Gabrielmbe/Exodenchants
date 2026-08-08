@@ -1,0 +1,93 @@
+# ============================================================
+#  FabledCustomEnchants — pools/tiers.yml
+#  Tiers, pesos de aparición y rangos de probabilidad
+# ------------------------------------------------------------
+#  Al generar un libro (tienda, loot, comando), el % de Éxito y
+#  el de Ruptura se sortean dentro del rango de su tier y se
+#  escriben en los Data Components del libro.
+#
+#  Escala de riesgo/recompensa: cuanto más alto el tier, mayor
+#  el nivel máximo y menor la probabilidad de éxito — de ahí el
+#  valor de los Polvos Mágicos en los tiers superiores.
+# ============================================================
+
+tiers:
+
+  comun:
+    display: "<gray>Común"
+    color: "#9E9E9E"
+    weight: 60
+    success:
+      min: 60
+      max: 95
+    destroy:
+      min: 0
+      max: 5
+    max-book-level: 1
+    book-glint: false
+    price: 2500
+
+  raro:
+    display: "<gradient:#7B2CBF:#C77DFF>Raro</gradient>"
+    color: "#7B2CBF"
+    weight: 30
+    success:
+      min: 35
+      max: 70
+    destroy:
+      min: 5
+      max: 15
+    max-book-level: 2
+    book-glint: true
+    price: 9500
+
+  legendario:
+    display: "<gradient:#FFD166:#FFB703>Legendario</gradient>"
+    color: "#FFB703"
+    weight: 10
+    success:
+      min: 15
+      max: 45
+    destroy:
+      min: 15
+      max: 35
+    max-book-level: 3
+    book-glint: true
+    price: 28000
+
+  mitico:
+    display: "<gradient:#F72585:#B5179E>Mítico</gradient>"
+    color: "#F72585"
+    weight: 4
+    success:
+      min: 10
+      max: 30
+    destroy:
+      min: 25
+      max: 45
+    max-book-level: 4
+    book-glint: true
+    price: 350000
+
+  divino:
+    display: "<gradient:#00F5D4:#4CC9F0>Divino</gradient>"
+    color: "#00F5D4"
+    weight: 1
+    success:
+      min: 5
+      max: 20
+    destroy:
+      min: 35
+      max: 60
+    max-book-level: 5
+    book-glint: true
+    price: 1500000
+
+# ------------------------------------------------------------
+# REGLAS DE SORTEO
+# ------------------------------------------------------------
+rolling:
+  # Redondea los % sorteados a múltiplos de 5 (estética más limpia)
+  round-to-multiple-of: 5
+  # Garantiza que exito + ruptura nunca superen 100
+  clamp-total-to-100: true

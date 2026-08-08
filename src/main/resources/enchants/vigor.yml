@@ -1,0 +1,36 @@
+# ============================================================
+#  enchants/vigor.yml — Regenera vida al recibir daño
+# ============================================================
+
+id: vigor
+enabled: true
+
+display-name: "Vigor"
+tier: comun
+max-level: 2
+icon: GOLDEN_APPLE
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gray>Vigor {nivel_romano}"
+
+description:
+  - "<gray>Recupera vida al recibir un golpe."
+  - "<dark_gray>│ <gray>Curación: <white>0.5 + 0.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Vigor"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: heal
+      target: self
+      value-base: 0.5
+      value-scale: 0.5

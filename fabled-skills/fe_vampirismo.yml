@@ -1,0 +1,77 @@
+# ============================================================
+#  FabledCustomEnchants — skills/fe_vampirismo.yml
+#  Skill dinámica NATIVA de Fabled 5 (copiar a
+#  plugins/Fabled/dynamic/skill/ y ejecutar /fabled reload)
+# ------------------------------------------------------------
+#  Efecto: al infligir daño físico, el portador se cura.
+#  Escalado matemático nativo de Fabled: value-base + value-scale
+#    Nivel 1 → 1.0 + 0.5 · Nivel 2 → 1.5 · Nivel 3 → 2.0
+#  NOTA: Fabled usa códigos legacy (&) en sus textos internos.
+# ============================================================
+
+FE_Vampirismo:
+  name: FE_Vampirismo
+  type: Dynamic
+  max-level: 3
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: REDSTONE
+  icon-key: ''
+  icon-lore:
+  - '&5&lVampirismo &7(Nv {level})'
+  - '&8│ &7Roba vida al golpear.'
+  - '&8│ &7Curación: &f{attr:heal}&c❤'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        # target: false → los efectos hijos se aplican al LANZADOR
+        # (el portador del arma), no a la víctima.
+        target: 'false'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        HEAL:
+          type: mechanic
+          data:
+            counts: 'true'
+            type: health
+            # ESCALADO NATIVO: curación = base + scale × (nivel − 1)
+            value-base: '1'
+            value-scale: '0.5'
+        PARTICLE:
+          type: mechanic
+          data:
+            counts: 'true'
+            particle: Heart
+            material: DIRT
+            type: XY
+            radius: '0.5'
+            particles-base: '3'
+            particles-scale: '1'
+            frequency: '0.0'
+            forward: '0'
+            upward: '1.2'
+            right: '0'

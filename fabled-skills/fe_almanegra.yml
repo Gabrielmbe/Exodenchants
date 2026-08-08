@@ -1,0 +1,88 @@
+# ============================================================
+#  skills/fe_almanegra.yml — Skill nativa de Fabled 5
+#  Alma Negra · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_AlmaNegra:
+  name: FE_AlmaNegra
+  type: Dynamic
+  max-level: 5
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: ECHO_SHARD
+  icon-key: ''
+  icon-lore:
+  - '&d&lAlma Negra &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    KILL:
+      type: trigger
+      data:
+
+      children:
+        HEAL:
+          type: mechanic
+          data:
+            counts: 'true'
+            type: health
+            value-base: '4'
+            value-scale: '2'
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Strength
+            ambient: 'false'
+            tier-base: '2'
+            tier-scale: '0'
+            seconds-base: '8'
+            seconds-scale: '2'
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Absorption
+            ambient: 'false'
+            tier-base: '1'
+            tier-scale: '0'
+            seconds-base: '8'
+            seconds-scale: '2'
+        PARTICLE:
+          type: mechanic
+          data:
+            counts: 'true'
+            particle: Witch
+            material: DIRT
+            type: Sphere
+            radius: '1'
+            particles-base: '25'
+            particles-scale: '2'
+            frequency: '0.0'
+            forward: '0'
+            upward: '1'
+            right: '0'
+        SOUND:
+          type: mechanic
+          data:
+            counts: 'true'
+            sound: ENTITY_WITHER_SPAWN
+            volume: '50'
+            pitch: '1.5'

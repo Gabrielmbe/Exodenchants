@@ -1,0 +1,52 @@
+# ============================================================
+#  enchants/voragine.yml — Vorágine
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: voragine
+enabled: true
+
+display-name: "Vorágine"
+tier: divino
+max-level: 5
+icon: HEAVY_CORE
+
+applicable-to:
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Vorágine {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Un vórtice de gravedad lanza y"
+  - "<gray>aplasta a tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>5.0 + 2.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Voragine"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 15
+  chance-scale: 5
+  actions:
+    - type: push
+      target: victim
+      value-base: 4
+      value-scale: 1
+    - type: damage
+      target: victim
+      value-base: 5
+      value-scale: 2.5
+    - type: particle
+      target: victim
+      value: Portal
+      count: 25
+    - type: sound
+      target: victim
+      value: ENTITY_WARDEN_SONIC_BOOM
+      volume: 0.8
+      pitch: 1.2

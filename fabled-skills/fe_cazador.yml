@@ -1,0 +1,76 @@
+# ============================================================
+#  skills/fe_cazador.yml — Skill nativa de Fabled 5
+#  Cazador · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Cazador:
+  name: FE_Cazador
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: CROSSBOW
+  icon-key: ''
+  icon-lore:
+  - '&d&lCazador &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '18'
+            chance-scale: '6'
+          children:
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '3.5'
+                value-scale: '1.5'
+                true: 'false'
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Slowness
+                ambient: 'false'
+                tier-base: '1'
+                tier-scale: '0'
+                seconds-base: '3'
+                seconds-scale: '1'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_ARROW_HIT_PLAYER
+                volume: '70'
+                pitch: '1.3'

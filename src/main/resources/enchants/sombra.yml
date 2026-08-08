@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/sombra.yml — Sombra
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: sombra
+enabled: true
+
+display-name: "Sombra"
+tier: mitico
+max-level: 4
+icon: PHANTOM_MEMBRANE
+
+applicable-to:
+  - BOOTS
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Sombra {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Al ser golpeado te desvaneces y"
+  - "<gray>ganas velocidad extrema."
+  - "<dark_gray>│ <gray>Probabilidad: <white>20% + 6%</white> <gray>por nivel"
+
+fabled-skill: "FE_Sombra"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 20
+  chance-scale: 6
+  actions:
+    - type: potion
+      target: self
+      value: Speed
+      amplifier: 2
+      seconds-base: 5
+      seconds-scale: 1
+    - type: potion
+      target: self
+      value: Invisibility
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1
+    - type: particle
+      target: self
+      value: SmokeLarge
+      count: 12

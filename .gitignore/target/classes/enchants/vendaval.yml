@@ -1,0 +1,53 @@
+# ============================================================
+#  enchants/vendaval.yml — Vendaval
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: vendaval
+enabled: true
+
+display-name: "Vendaval"
+tier: mitico
+max-level: 4
+icon: WIND_CHARGE
+
+applicable-to:
+  - AXE
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Vendaval {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Una ráfaga colosal repele y daña"
+  - "<gray>a tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>14% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>3.0 + 1.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Vendaval"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 14
+  chance-scale: 5
+  actions:
+    - type: push
+      target: victim
+      value-base: 3
+      value-scale: 0.7
+    - type: damage
+      target: victim
+      value-base: 3
+      value-scale: 1.5
+    - type: particle
+      target: victim
+      value: CloudPuff
+      count: 15
+    - type: sound
+      target: victim
+      value: ENTITY_BREEZE_WIND_BURST
+      volume: 0.7
+      pitch: 1

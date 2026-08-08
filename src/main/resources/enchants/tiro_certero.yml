@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/tiro_certero.yml — Tiro Certero
+# ============================================================
+
+id: tiro_certero
+enabled: true
+
+display-name: "Tiro Certero"
+tier: raro
+max-level: 3
+icon: SPECTRAL_ARROW
+
+applicable-to:
+  - BOW
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Tiro Certero {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de daño adicional a distancia."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 7%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>2.0 + 1.0</white> <gray>por nivel"
+
+fabled-skill: "FE_TiroCertero"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 15
+  chance-scale: 7
+  actions:
+    - type: damage
+      target: victim
+      value-base: 2
+      value-scale: 1
+    - type: sound
+      target: victim
+      value: ENTITY_ARROW_HIT_PLAYER
+      volume: 0.6
+      pitch: 1.2

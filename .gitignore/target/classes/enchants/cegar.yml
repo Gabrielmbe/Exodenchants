@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/cegar.yml — Cegar
+# ============================================================
+
+id: cegar
+enabled: true
+
+display-name: "Cegar"
+tier: comun
+max-level: 2
+icon: INK_SAC
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gray>Cegar {nivel_romano}"
+
+description:
+  - "<gray>Probabilidad de cegar a tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 6%</white> <gray>por nivel"
+
+fabled-skill: "FE_Cegar"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 12
+  chance-scale: 6
+  actions:
+    - type: potion
+      target: victim
+      value: Blindness
+      amplifier: 0
+      seconds-base: 2
+      seconds-scale: 1

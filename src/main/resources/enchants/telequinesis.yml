@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/telequinesis.yml — Telequinesis
+#  Tier RARO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: telequinesis
+enabled: true
+
+display-name: "Telequinesis"
+tier: raro
+max-level: 1
+icon: ENDER_EYE
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Telequinesis {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Los drops y la experiencia van"
+  - "<gray><white>directos a tu inventario</white>."
+  - "<dark_gray>│ <gray>Nada cae al suelo ni se pierde"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: telekinesis
+  value-base: 1
+  value-scale: 0
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

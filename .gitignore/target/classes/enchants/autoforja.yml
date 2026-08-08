@@ -1,0 +1,43 @@
+# ============================================================
+#  enchants/autoforja.yml — Autoforja
+#  Tier MITICO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: autoforja
+enabled: true
+
+display-name: "Autoforja"
+tier: mitico
+max-level: 3
+icon: ANVIL
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Autoforja {nivel_romano}</gradient>"
+
+description:
+  - "<gray>La herramienta se <white>repara sola</white>"
+  - "<gray>mientras trabajas."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 10%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Durabilidad: <white>20</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: self_repair
+  value-base: 1
+  value-scale: 0
+  chance-base: 15
+  chance-scale: 10
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

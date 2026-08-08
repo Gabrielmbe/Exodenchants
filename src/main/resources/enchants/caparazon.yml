@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/caparazon.yml — Caparazón
+# ============================================================
+
+id: caparazon
+enabled: true
+
+display-name: "Caparazón"
+tier: comun
+max-level: 2
+icon: TURTLE_HELMET
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gray>Caparazón {nivel_romano}"
+
+description:
+  - "<gray>Probabilidad de resistir el daño recibido."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 8%</white> <gray>por nivel"
+
+fabled-skill: "FE_Caparazon"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 15
+  chance-scale: 8
+  actions:
+    - type: potion
+      target: self
+      value: Resistance
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1

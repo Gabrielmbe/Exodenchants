@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/congelacion.yml — Ralentiza al objetivo al golpear
+# ============================================================
+
+id: congelacion
+enabled: true
+
+display-name: "Congelación"
+tier: raro
+max-level: 2
+icon: BLUE_ICE
+
+applicable-to:
+  - SWORD
+
+conflicts: [llamarada]
+
+lore-line: "<gradient:#48CAE4:#90E0EF>Congelación {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Congela a tu objetivo al golpear,"
+  - "<gray>reduciendo su velocidad."
+  - "<dark_gray>│ <gray>Duración: <white>2s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_Congelacion"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: victim
+      value: Slowness
+      amplifier: 1
+      seconds-base: 2
+      seconds-scale: 1

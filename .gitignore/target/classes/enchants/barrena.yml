@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/barrena.yml — Barrena
+# ============================================================
+
+id: barrena
+enabled: true
+
+display-name: "Barrena"
+tier: legendario
+max-level: 3
+icon: NETHERITE_PICKAXE
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Barrena {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de prisa extrema al minar."
+  - "<dark_gray>│ <gray>Probabilidad: <white>18% + 8%</white> <gray>por nivel"
+
+fabled-skill: "FE_Barrena"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: mine
+  chance-base: 18
+  chance-scale: 8
+  actions:
+    - type: potion
+      target: self
+      value: Haste
+      amplifier: 2
+      seconds-base: 6
+      seconds-scale: 2
+    - type: particle
+      target: self
+      value: Crit
+      count: 12

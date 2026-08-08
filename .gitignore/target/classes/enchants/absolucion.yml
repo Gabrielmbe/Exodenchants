@@ -1,0 +1,49 @@
+# ============================================================
+#  enchants/absolucion.yml — Absolución
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: absolucion
+enabled: true
+
+display-name: "Absolución"
+tier: mitico
+max-level: 4
+icon: TOTEM_OF_UNDYING
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Absolución {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de sanar y regenerar"
+  - "<gray>al recibir un golpe."
+  - "<dark_gray>│ <gray>Probabilidad: <white>18% + 6%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Curación: <white>3.0 + 1.5</white> <gray>por nivel"
+
+fabled-skill: "FE_Absolucion"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 18
+  chance-scale: 6
+  actions:
+    - type: heal
+      target: self
+      value-base: 3
+      value-scale: 1.5
+    - type: potion
+      target: self
+      value: Regeneration
+      amplifier: 1
+      seconds-base: 4
+      seconds-scale: 1
+    - type: particle
+      target: self
+      value: Heart
+      count: 10

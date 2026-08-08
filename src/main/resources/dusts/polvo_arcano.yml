@@ -1,0 +1,37 @@
+# ============================================================
+#  dusts/polvo_arcano.yml — Polvo Arcano
+# ------------------------------------------------------------
+#  Consumible que REDUCE el % de ruptura de un Libro de
+#  Encantamiento. Se usa arrastrando el polvo sobre el libro.
+#  El valor real viaja en Data Components (fd_id, fd_reduce);
+#  el Lore es solo estética.
+#
+#  Placeholders: {polvo} {reduccion} {precio} {color}
+# ============================================================
+
+id: polvo_arcano
+enabled: true
+
+display-name: "Polvo Arcano"
+material: GLOWSTONE_DUST
+glint: true
+color: "#7B2CBF"
+
+# Puntos porcentuales que resta al % de ruptura del libro
+reduce: 10
+
+# Precio en la tienda de polvos (economía vía Vault)
+price: 120000
+
+item-name: "<dark_gray>» <color:{color}>{polvo}</color> <dark_gray>«"
+
+lore:
+  - ""
+  - "<gray>Polvo cargado de energía arcana."
+  - "<gray>Reduce notablemente el riesgo."
+  - ""
+  - "<dark_gray>│ <green>▼ Ruptura <dark_gray>· <white>-{reduccion}%"
+  - "<dark_gray>│ <gray>Valor <dark_gray>· <white>${precio}"
+  - ""
+  - "<dark_purple>Arrastra este polvo sobre un libro"
+  - "<dark_purple>de encantamiento para aplicarlo."

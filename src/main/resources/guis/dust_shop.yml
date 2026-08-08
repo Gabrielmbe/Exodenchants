@@ -1,0 +1,191 @@
+# ============================================================
+#  guis/dust_shop.yml — Polvos y Esencias
+# ------------------------------------------------------------
+#  fila 2 (11-15)    = POLVOS   ▼ bajan la ruptura
+#  fila 3 (19-25)    = franja decorativa
+#  fila 4 (29·31·33) = ESENCIAS ▲ suben el éxito
+#  fila 5 (40)       = guía   ·   fila 6 (49) = volver
+#
+#  Precios y valores salen de dusts/*.yml: la GUI nunca se
+#  desincroniza de los archivos reales.
+# ============================================================
+
+menu:
+  id: dust_shop
+  title: "<dark_gray>✦ <gradient:#48CAE4:#90E0EF>ᴘᴏʟᴠᴏꜱ ʏ ᴇꜱᴇɴᴄɪᴀꜱ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53, 19, 20, 21, 22, 23, 24, 25]
+
+items:
+
+  polvo-menor:
+    slot: 11
+    material: SUGAR
+    name: "<color:#9E9E9E>✦ ᴘᴏʟᴠᴏ ᴍᴇɴᴏʀ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Refinado básico que estabiliza"
+      - "<gray>la energía del libro."
+      - ""
+      - "<dark_gray>❘ <green>▼ Ruptura <dark_gray>· <white>{dust_sign_polvo_menor}{dust_value_polvo_menor}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_polvo_menor}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#9E9E9E>➜ Click para comprar"
+    actions:
+      - "buy-dust: polvo_menor"
+
+  polvo-arcano:
+    slot: 12
+    material: GLOWSTONE_DUST
+    name: "<color:#7B2CBF>✦ ᴘᴏʟᴠᴏ ᴀʀᴄᴀɴᴏ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Cargado de energía arcana."
+      - "<gray>Reduce notablemente el riesgo."
+      - ""
+      - "<dark_gray>❘ <green>▼ Ruptura <dark_gray>· <white>{dust_sign_polvo_arcano}{dust_value_polvo_arcano}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_polvo_arcano}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#7B2CBF>➜ Click para comprar"
+    actions:
+      - "buy-dust: polvo_arcano"
+
+  polvo-celestial:
+    slot: 13
+    material: PRISMARINE_CRYSTALS
+    name: "<color:#48CAE4>✦ ᴘᴏʟᴠᴏ ᴄᴇʟᴇꜱᴛɪᴀʟ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Cristales de origen celestial."
+      - "<gray>Riesgo mínimo."
+      - ""
+      - "<dark_gray>❘ <green>▼ Ruptura <dark_gray>· <white>{dust_sign_polvo_celestial}{dust_value_polvo_celestial}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_polvo_celestial}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#48CAE4>➜ Click para comprar"
+    actions:
+      - "buy-dust: polvo_celestial"
+
+  polvo-estelar:
+    slot: 14
+    material: NETHER_STAR
+    name: "<color:#F72585>✦ ᴘᴏʟᴠᴏ ᴇꜱᴛᴇʟᴀʀ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Estrella molida para los libros"
+      - "<gray>míticos y divinos."
+      - ""
+      - "<dark_gray>❘ <green>▼ Ruptura <dark_gray>· <white>{dust_sign_polvo_estelar}{dust_value_polvo_estelar}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_polvo_estelar}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#F72585>➜ Click para comprar"
+    actions:
+      - "buy-dust: polvo_estelar"
+
+  polvo-primordial:
+    slot: 15
+    material: DRAGON_EGG
+    name: "<color:#FFB703>✦ ᴘᴏʟᴠᴏ ᴘʀɪᴍᴏʀᴅɪᴀʟ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>La reliquia definitiva: elimina"
+      - "<gray>por completo la ruptura."
+      - ""
+      - "<dark_gray>❘ <green>▼ Ruptura <dark_gray>· <white>{dust_sign_polvo_primordial}{dust_value_polvo_primordial}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_polvo_primordial}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#FFB703>➜ Click para comprar"
+    actions:
+      - "buy-dust: polvo_primordial"
+
+  esencia-menor:
+    slot: 29
+    material: LAPIS_LAZULI
+    name: "<color:#90E0EF>✦ ᴇꜱᴇɴᴄɪᴀ ᴅᴇ ꜰᴏʀᴛᴜɴᴀ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Chispa de fortuna que guía"
+      - "<gray>la energía del libro."
+      - ""
+      - "<dark_gray>❘ <green>▲ Éxito <dark_gray>· <white>{dust_sign_esencia_menor}{dust_value_esencia_menor}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_esencia_menor}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#90E0EF>➜ Click para comprar"
+    actions:
+      - "buy-dust: esencia_menor"
+
+  esencia-mayor:
+    slot: 31
+    material: AMETHYST_SHARD
+    name: "<color:#C77DFF>✦ ᴇꜱᴇɴᴄɪᴀ ᴍᴀʏᴏʀ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Cristal refinado. Mejora mucho"
+      - "<gray>la afinidad del libro."
+      - ""
+      - "<dark_gray>❘ <green>▲ Éxito <dark_gray>· <white>{dust_sign_esencia_mayor}{dust_value_esencia_mayor}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_esencia_mayor}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#C77DFF>➜ Click para comprar"
+    actions:
+      - "buy-dust: esencia_mayor"
+
+  esencia-divina:
+    slot: 33
+    material: ECHO_SHARD
+    name: "<color:#00F5D4>✦ ᴇꜱᴇɴᴄɪᴀ ᴅɪᴠɪɴᴀ ✦</color>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Eco divino. Casi garantiza"
+      - "<gray>que el ritual prospere."
+      - ""
+      - "<dark_gray>❘ <green>▲ Éxito <dark_gray>· <white>{dust_sign_esencia_divina}{dust_value_esencia_divina}%"
+      - "<dark_gray>❘ <gray>Precio <dark_gray>· <white>${dust_price_esencia_divina}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<color:#00F5D4>➜ Click para comprar"
+    actions:
+      - "buy-dust: esencia_divina"
+
+  guia:
+    slot: 40
+    material: PAPER
+    name: "<white>✦ ᴄóᴍᴏ ᴜꜱᴀʀʟᴏꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<white>1. <gray>Compra el polvo o la esencia."
+      - "<white>2. <gray>Tómalo con el cursor."
+      - "<white>3. <gray>Click sobre un <white>libro</white> <gray>de tu"
+      - "   <gray>inventario."
+      - ""
+      - "<dark_gray>❘ <#48CAE4>▼ Polvos <dark_gray>· <gray>bajan la <white>ruptura"
+      - "<dark_gray>❘ <#90E0EF>▲ Esencias <dark_gray>· <gray>suben el <white>éxito"
+      - ""
+      - "<green>✔ <gray>Efecto <white>garantizado<gray>, sin tirada."
+      - "<gray>Acumulables hasta <white>{ruptura_minima}%</white> <gray>y <white>{exito_maximo}%<gray>."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Dinero <dark_gray>· <white>${balance}"
+    actions:
+      - "sound: gui-click"
+
+  volver:
+    slot: 49
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "open-gui: enchanter_shop"

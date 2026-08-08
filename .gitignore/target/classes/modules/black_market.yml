@@ -1,0 +1,37 @@
+# ============================================================
+#  FabledCustomEnchants — modules/black_market.yml
+#  MERCADO NEGRO
+# ------------------------------------------------------------
+#  Ofertas que rotan cada N horas: libros con el % de éxito ya
+#  mejorado y consumibles con descuento.
+#
+#  La rotación es DETERMINISTA: se calcula a partir del reloj
+#  dividido por el periodo, así que todos los jugadores ven el
+#  mismo catálogo y este cambia solo al cumplirse el plazo. No
+#  hace falta persistir nada ni reiniciar el servidor.
+# ============================================================
+
+enabled: true
+
+# Cada cuántas horas cambia el catálogo
+rotation-hours: 6
+
+# Cuántas ofertas simultáneas (nunca más que las ranuras disponibles)
+offer-count: 4
+
+# Ranuras de la GUI donde se colocan (guis/black_market.yml)
+slots: [11, 12, 13, 14, 15]
+
+# Descuento sobre el precio base del libro o del polvo
+discount:
+  min: 15
+  max: 45
+
+# Puntos que se SUMAN al máximo de éxito del tier: el gancho real
+# del mercado son libros que ya vienen con buenas probabilidades
+success-bonus:
+  min: 10
+  max: 30
+
+# Probabilidad (%) de que una oferta sea un polvo/esencia en vez de un libro
+dust-chance: 35

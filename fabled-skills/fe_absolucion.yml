@@ -1,0 +1,82 @@
+# ============================================================
+#  skills/fe_absolucion.yml — Skill nativa de Fabled 5
+#  Absolución · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Absolucion:
+  name: FE_Absolucion
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: TOTEM_OF_UNDYING
+  icon-key: ''
+  icon-lore:
+  - '&d&lAbsolución &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    TOOK_PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'false'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '18'
+            chance-scale: '6'
+          children:
+            HEAL:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: health
+                value-base: '3'
+                value-scale: '1.5'
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Regeneration
+                ambient: 'false'
+                tier-base: '1'
+                tier-scale: '0'
+                seconds-base: '4'
+                seconds-scale: '1'
+            PARTICLE:
+              type: mechanic
+              data:
+                counts: 'true'
+                particle: Heart
+                material: DIRT
+                type: Sphere
+                radius: '1'
+                particles-base: '10'
+                particles-scale: '2'
+                frequency: '0.0'
+                forward: '0'
+                upward: '1'
+                right: '0'

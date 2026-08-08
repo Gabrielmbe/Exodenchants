@@ -1,0 +1,62 @@
+# ============================================================
+#  FabledCustomEnchants — modules/set_combos.yml
+#  COMBOS DE SET
+# ------------------------------------------------------------
+#  Al llevar equipados N encantamientos DISTINTOS del mismo tier
+#  (manos + armadura), se concede un bono pasivo permanente
+#  mientras el conjunto siga puesto. Solo se aplica el combo de
+#  mayor rango, y se retira solo al dejar de cumplirlo.
+#
+#  Consulta tu progreso en el juego con /encantos combos
+# ============================================================
+
+enabled: true
+
+# Cada cuántos ticks se refresca el bono (20 ticks = 1 segundo)
+refresh-ticks: 60
+
+sets:
+
+  raro:
+    required: 3
+    display: "<gradient:#7B2CBF:#C77DFF>Conjunto Raro</gradient>"
+    announce: "<dark_gray>[<gradient:#7B2CBF:#C77DFF>Combo</gradient><dark_gray>] <gray>Conjunto <white>Raro</white> activo: <white>Velocidad I</white>."
+    bonuses:
+      - potion: SPEED
+        amplifier: 0
+
+  legendario:
+    required: 3
+    display: "<gradient:#FFD166:#FFB703>Conjunto Legendario</gradient>"
+    announce: "<dark_gray>[<gradient:#FFD166:#FFB703>Combo</gradient><dark_gray>] <gray>Conjunto <white>Legendario</white> activo: <white>Velocidad I + Prisa I</white>."
+    bonuses:
+      - potion: SPEED
+        amplifier: 0
+      - potion: HASTE
+        amplifier: 0
+
+  mitico:
+    required: 3
+    display: "<gradient:#F72585:#B5179E>Conjunto Mítico</gradient>"
+    announce: "<dark_gray>[<gradient:#F72585:#B5179E>Combo</gradient><dark_gray>] <gray>Conjunto <white>Mítico</white> activo: <white>Velocidad II + Prisa I + Resistencia I</white>."
+    bonuses:
+      - potion: SPEED
+        amplifier: 1
+      - potion: HASTE
+        amplifier: 0
+      - potion: RESISTANCE
+        amplifier: 0
+
+  divino:
+    required: 3
+    display: "<gradient:#00F5D4:#4CC9F0>Conjunto Divino</gradient>"
+    announce: "<dark_gray>[<gradient:#00F5D4:#4CC9F0>Combo</gradient><dark_gray>] <gray>Conjunto <white>Divino</white> activo: bonos máximos."
+    bonuses:
+      - potion: SPEED
+        amplifier: 1
+      - potion: HASTE
+        amplifier: 1
+      - potion: RESISTANCE
+        amplifier: 1
+      - potion: REGENERATION
+        amplifier: 0

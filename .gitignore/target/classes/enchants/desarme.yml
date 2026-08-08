@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/desarme.yml — Desarme
+# ============================================================
+
+id: desarme
+enabled: true
+
+display-name: "Desarme"
+tier: raro
+max-level: 2
+icon: SHIELD
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Desarme {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de entorpecer el ataque rival."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 6%</white> <gray>por nivel"
+
+fabled-skill: "FE_Desarme"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 12
+  chance-scale: 6
+  actions:
+    - type: potion
+      target: victim
+      value: MiningFatigue
+      amplifier: 1
+      seconds-base: 3
+      seconds-scale: 1

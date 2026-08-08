@@ -1,0 +1,37 @@
+# ============================================================
+#  dusts/polvo_menor.yml — Polvo Menor
+# ------------------------------------------------------------
+#  Consumible que REDUCE el % de ruptura de un Libro de
+#  Encantamiento. Se usa arrastrando el polvo sobre el libro.
+#  El valor real viaja en Data Components (fd_id, fd_reduce);
+#  el Lore es solo estética.
+#
+#  Placeholders: {polvo} {reduccion} {precio} {color}
+# ============================================================
+
+id: polvo_menor
+enabled: true
+
+display-name: "Polvo Menor"
+material: SUGAR
+glint: false
+color: "#9E9E9E"
+
+# Puntos porcentuales que resta al % de ruptura del libro
+reduce: 5
+
+# Precio en la tienda de polvos (economía vía Vault)
+price: 45000
+
+item-name: "<dark_gray>» <color:{color}>{polvo}</color> <dark_gray>«"
+
+lore:
+  - ""
+  - "<gray>Un refinado básico que estabiliza"
+  - "<gray>la energía del libro."
+  - ""
+  - "<dark_gray>│ <green>▼ Ruptura <dark_gray>· <white>-{reduccion}%"
+  - "<dark_gray>│ <gray>Valor <dark_gray>· <white>${precio}"
+  - ""
+  - "<dark_purple>Arrastra este polvo sobre un libro"
+  - "<dark_purple>de encantamiento para aplicarlo."

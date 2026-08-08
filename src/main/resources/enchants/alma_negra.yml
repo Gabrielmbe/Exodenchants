@@ -1,0 +1,60 @@
+# ============================================================
+#  enchants/alma_negra.yml — Alma Negra
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: alma_negra
+enabled: true
+
+display-name: "Alma Negra"
+tier: divino
+max-level: 5
+icon: ECHO_SHARD
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Alma Negra {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Devoras el alma de tu víctima:"
+  - "<gray>te curas y ganas poder brutal."
+  - "<dark_gray>│ <gray>Curación: <white>4.0 + 2.0</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Fuerza: <white>8s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_AlmaNegra"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: kill
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: heal
+      target: self
+      value-base: 4
+      value-scale: 2
+    - type: potion
+      target: self
+      value: Strength
+      amplifier: 2
+      seconds-base: 8
+      seconds-scale: 2
+    - type: potion
+      target: self
+      value: Absorption
+      amplifier: 1
+      seconds-base: 8
+      seconds-scale: 2
+    - type: particle
+      target: self
+      value: Witch
+      count: 25
+    - type: sound
+      target: self
+      value: ENTITY_WITHER_SPAWN
+      volume: 0.5
+      pitch: 1.5

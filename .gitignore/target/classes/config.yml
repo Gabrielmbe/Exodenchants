@@ -1,0 +1,219 @@
+# ============================================================
+#  FabledCustomEnchants — config.yml
+#  Configuración general del núcleo
+#  Compatible: Minecraft Java 1.21.x → 26.2 "Chaos Cubed"
+#  Motor de efectos: Fabled 5 (MageMonkey Studio)
+# ============================================================
+
+core:
+  locale: "es"
+  debug: false
+  # Verifica al arrancar que todos los libros/ítems del mercado
+  # tengan sus Data Components íntegros (fe_id, fe_level, etc.)
+  validate-components-on-load: true
+  # Reintenta el registro de skills si Fabled carga después del puente
+  hook:
+    plugin: "Fabled"
+    require-version-min: "1.0.4"
+
+# ------------------------------------------------------------
+# ALMACENAMIENTO — Data Components (1.21+ / 26.x)
+# Los datos NUNCA se leen del Lore (el Lore es solo estética).
+# Todo se persiste en minecraft:custom_data vía
+# PersistentDataContainer bajo el namespace declarado aquí.
+# ------------------------------------------------------------
+storage:
+  namespace: "fabledenchants"
+  keys:
+    enchant-id:    "fe_id"        # STRING  → id del encantamiento (ej: vampirismo)
+    enchant-level: "fe_level"     # INTEGER → nivel aplicado
+    success-rate:  "fe_success"   # INTEGER → % de éxito del libro (1-100)
+    destroy-rate:  "fe_destroy"   # INTEGER → % de ruptura del ítem al fallar
+    tier:          "fe_tier"      # STRING  → comun | raro | legendario
+
+# ------------------------------------------------------------
+# LÍMITES GLOBALES
+# ------------------------------------------------------------
+limits:
+  max-enchants-per-item: 6
+  # Suelo al que pueden llegar los polvos de ruptura (0 = ruptura eliminable)
+  min-destroy-rate: 0
+  # Techo al que pueden llegar las esencias de éxito (100 = éxito garantizado)
+  max-success-rate: 100
+  allow-downgrade: false          # No permite aplicar un nivel menor al existente
+  allow-same-level-reroll: false
+
+# ------------------------------------------------------------
+# RACHA DE SUERTE (sistema anti-mala-suerte)
+# Cada fallo consecutivo del MISMO tier suma puntos al % de éxito
+# del siguiente intento de ese tier. Se reinicia al acertar.
+#   bono = fallos x per-fail   (con techo max-bonus)
+# ------------------------------------------------------------
+luck:
+  enabled: true
+  per-fail: 3
+  max-bonus: 25
+
+# ------------------------------------------------------------
+# RANKING (/encantos top)
+# Puntos que otorga cada encantamiento aplicado con éxito.
+# También definen qué tiers se consideran "difíciles" para los
+# anuncios globales (announce.min-tier-points).
+# ------------------------------------------------------------
+ranking:
+  points:
+    comun: 1
+    raro: 3
+    legendario: 8
+    mitico: 20
+    divino: 50
+
+# ------------------------------------------------------------
+# ANUNCIOS GLOBALES
+# Solo se anuncia lo que merece atención: basta con cumplir UNA
+# de las tres condiciones (tier valioso, libro caro, o gesta
+# improbable con un % de éxito bajísimo).
+# ------------------------------------------------------------
+announce:
+  enabled: true
+  min-tier-points: 8        # Legendario o superior
+  min-price: 90000          # o libros de 90k en adelante
+  max-success: 20           # o aplicados con <= 20% de éxito
+  on-purchase: true
+  on-destroy: true
+
+# ------------------------------------------------------------
+# COSMÉTICA DE LOS ÍTEMS ENCANTADOS
+# glint: aplica el brillo encantado nativo (Data Component
+#        enchantment_glint_override, 1.20.5+) al ítem que recibe
+#        un encantamiento, para que se vea encantado de verdad
+#        aunque no lleve ningún encantamiento vanilla.
+# lore-header: línea decorativa que encabeza la lista de
+#        encantamientos en el Lore del ítem (deja "" para omitirla).
+# ------------------------------------------------------------
+cosmetics:
+  glint: true
+  # Marco de la sección de encantamientos en el Lore del ítem.
+  # La sección se reconstruye entera en cada aplicación: cabecera,
+  # una línea por encanto con el símbolo de su tier (ordenadas de
+  # Común a Divino) y pie de cierre.
+  lore-header: "<dark_gray>◤▬▬ <gradient:#7B2CBF:#C77DFF>✦ ᴇɴᴄᴀɴᴛᴀᴍɪᴇɴᴛᴏꜱ ✦</gradient> <dark_gray>▬▬◥"
+  lore-footer: "<dark_gray>◣▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬◢"
+  # Símbolo que precede a cada encantamiento según su tier
+  tier-symbols:
+    comun: "<gray>◆"
+    raro: "<#C77DFF>◆"
+    legendario: "<#FFB703>✦"
+    mitico: "<#F72585>❖"
+    divino: "<#00F5D4>✵"
+
+# ------------------------------------------------------------
+# SONIDOS GLOBALES (claves modernas del registro de sonidos)
+# ------------------------------------------------------------
+sounds:
+  apply-success:
+    key: "block.anvil.use"
+    volume: 1.0
+    pitch: 1.0
+  apply-fail:
+    key: "entity.item.break"
+    volume: 1.0
+    pitch: 0.7
+  item-destroyed:
+    key: "entity.generic.explode"
+    volume: 0.6
+    pitch: 1.4
+  gui-open:
+    key: "block.ender_chest.open"
+    volume: 0.5
+    pitch: 1.2
+  gui-click:
+    key: "ui.button.click"
+    volume: 0.4
+    pitch: 1.0
+  purchase-success:
+    key: "entity.experience_orb.pickup"
+    volume: 0.8
+    pitch: 1.1
+  purchase-denied:
+    key: "entity.villager.no"
+    volume: 0.8
+    pitch: 0.9
+  announce:
+    key: "ui.toast.challenge_complete"
+    volume: 0.7
+    pitch: 1.0
+  combo-activated:
+    key: "block.beacon.activate"
+    volume: 0.6
+    pitch: 1.5
+  dust-applied:
+    key: "block.amethyst_block.chime"
+    volume: 0.9
+    pitch: 1.3
+
+# ------------------------------------------------------------
+# PARTÍCULAS — nombres modernos (post-1.21 / 26.x)
+# Referencia de renombres: BLOCK_CRACK → block · ITEM_CRACK → item
+# VILLAGER_HAPPY → happy_villager · SPELL_WITCH → witch
+# ------------------------------------------------------------
+particles:
+  apply-success:
+    type: "enchanted_hit"
+    amount: 40
+    offset: [0.4, 0.6, 0.4]
+    speed: 0.15
+  apply-fail:
+    # Ruptura del libro: fragmentos del ítem BOOK
+    type: "item"
+    material: "BOOK"
+    amount: 25
+    offset: [0.3, 0.5, 0.3]
+    speed: 0.1
+  item-destroyed:
+    type: "dust"
+    color: "#7B2CBF"
+    size: 1.2
+    amount: 30
+    offset: [0.4, 0.6, 0.4]
+  gui-ambient:
+    type: "witch"
+    amount: 6
+    offset: [0.2, 0.4, 0.2]
+
+# ------------------------------------------------------------
+# MENSAJES — formato MiniMessage
+# Placeholders internos: {enchant} {nivel} {nivel_romano}
+#                        {exito} {ruptura} {tier} {max} {precio}
+# ------------------------------------------------------------
+messages:
+  prefix: "<dark_gray>[<gradient:#7B2CBF:#C77DFF>Encantos</gradient><dark_gray>]<reset> "
+  apply-success: "<prefix><green>Has aplicado <white>{enchant} {nivel_romano}</white> con éxito."
+  apply-fail: "<prefix><red>El libro se rompió al intentar aplicar <white>{enchant}</white>..."
+  item-destroyed: "<prefix><dark_red>¡El ítem no resistió la energía y fue destruido!"
+  not-applicable: "<prefix><yellow>Este encantamiento no es compatible con ese ítem."
+  already-has: "<prefix><yellow>El ítem ya posee <white>{enchant}</white> a ese nivel o superior."
+  max-enchants: "<prefix><yellow>Este ítem alcanzó el máximo de <white>{max}</white> encantamientos."
+  no-money: "<prefix><red>No tienes suficiente dinero. Precio: <white>{precio}</white>."
+  shop-empty: "<prefix><yellow>Ese tier aún no tiene encantamientos disponibles."
+  inspect-on: "<prefix><#FFB703>Modo inspección <green>activado<#FFB703>. Haz click sobre un ítem: se abrirá su lista de encantos (un solo uso)."
+  inspect-off: "<prefix><#FFB703>Modo inspección <red>desactivado<#FFB703>."
+  inspect-used: "<prefix><#FFB703>Inspección consumida. Usa <white>/encantos inspect</white> para inspeccionar otro ítem."
+  inspect-none: "<prefix><yellow>Ese ítem no admite ningún encantamiento del sistema."
+  inspect-hand-empty: "<prefix><yellow>Sostén un ítem en la mano para inspeccionarlo."
+  admin-book-given: "<prefix><green>Libro de <white>{enchant} {nivel_romano}</white> entregado <dark_gray>(éxito {exito}% · ruptura {ruptura}%)."
+  no-permission: "<prefix><red>No tienes permiso para eso."
+  shop-locked: "<prefix><red>Tier reservado: necesitas <white>{puntos} pts</white> de encantador <dark_gray>(tienes {actual})<red>. Gana puntos aplicando encantamientos."
+  luck-applied: "<prefix><#FFD166>Racha de suerte<gray>: <white>+{bono}%</white> de éxito <dark_gray>(total {exito}%)."
+  luck-streak: "<prefix><#FFD166>{racha} fallos seguidos<gray>: tu próximo intento tendrá <white>+{bono}%</white> de éxito."
+  market-bought: "<prefix><#F72585>Mercado negro<gray>: has comprado <white>{articulo}</white> con <white>{descuento}%</white> de descuento."
+  announce-applied: "<dark_gray>▬▬▬ <gradient:#FFD166:#FFB703>GESTA</gradient> <dark_gray>▬▬▬<newline><white>{jugador}</white> <gray>ha aplicado <white>{enchant} {nivel_romano}</white> <dark_gray>[{tier}<dark_gray>] <gray>con solo <red>{exito}%</red> <gray>de éxito."
+  announce-purchased: "<dark_gray>» <white>{jugador}</white> <gray>ha adquirido un libro <dark_gray>[{tier}<dark_gray>] <gray>de <white>{enchant}</white>."
+  announce-destroyed: "<dark_gray>» <gray>El ítem de <white>{jugador}</white> <gray>se destruyó intentando <white>{enchant}</white> <dark_gray>[{tier}<dark_gray>]."
+  charge-released: "<prefix><#F72585>¡Carga liberada! <gray>La herramienta detona en área."
+  dust-applied: "<prefix><#48CAE4>{polvo} <gray>aplicado: ruptura <red>{anterior}%</red> <dark_gray>→ <green>{ruptura}%</green>."
+  dust-boosted: "<prefix><#90E0EF>{polvo} <gray>aplicada: éxito <yellow>{anterior}%</yellow> <dark_gray>→ <green>{exito}%</green>."
+  dust-max-reached: "<prefix><yellow>Este libro ya está en el máximo de éxito <white>({maximo}%)</white>."
+  dust-invalid-target: "<prefix><yellow>Los polvos y esencias solo se aplican sobre libros de encantamiento."
+  dust-min-reached: "<prefix><yellow>Este libro ya está en el mínimo de ruptura <white>({minimo}%)</white>."
+  dust-purchased: "<prefix><green>Has comprado <white>{polvo}</white> <dark_gray>(-{reduccion}% de ruptura)."

@@ -1,0 +1,47 @@
+# ============================================================
+#  skills/fe_amortiguar.yml — Skill nativa de Fabled 5
+#  Amortiguar · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Amortiguar:
+  name: FE_Amortiguar
+  type: Dynamic
+  max-level: 2
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: HAY_BLOCK
+  icon-key: ''
+  icon-lore:
+  - '&7&lAmortiguar &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    LAND:
+      type: trigger
+      data:
+        min-distance: '3'
+      children:
+        HEAL:
+          type: mechanic
+          data:
+            counts: 'true'
+            type: health
+            value-base: '1'
+            value-scale: '0.5'

@@ -1,0 +1,80 @@
+# ============================================================
+#  skills/fe_carniceria.yml — Skill nativa de Fabled 5
+#  Carnicería · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Carniceria:
+  name: FE_Carniceria
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHERITE_SWORD
+  icon-key: ''
+  icon-lore:
+  - '&d&lCarnicería &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '15'
+            chance-scale: '5'
+          children:
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '4'
+                value-scale: '2'
+                true: 'true'
+            PARTICLE:
+              type: mechanic
+              data:
+                counts: 'true'
+                particle: Crit
+                material: DIRT
+                type: Sphere
+                radius: '1'
+                particles-base: '15'
+                particles-scale: '2'
+                frequency: '0.0'
+                forward: '0'
+                upward: '1'
+                right: '0'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_PLAYER_ATTACK_CRIT
+                volume: '80'
+                pitch: '0.7'

@@ -1,0 +1,83 @@
+# ============================================================
+#  guis/catalog.yml — Catálogo (paginado, autogenerado)
+# ------------------------------------------------------------
+#  Las entradas salen solas de enchants/*.yml, ordenadas por
+#  tier y paginadas de 21 en 21. Añadir un encantamiento lo
+#  hace aparecer aquí sin tocar este archivo.
+# ============================================================
+
+menu:
+  id: catalog
+  title: "<dark_gray>✦ <gradient:#7B2CBF:#C77DFF>ᴄᴀᴛáʟᴏɢᴏ</gradient> <dark_gray>✦"
+  rows: 6
+  open-sound: gui-open
+  dynamic: enchant-catalog
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,44, 45,46,47,48,49,50,51,52,53]
+  accents:
+    material: PURPLE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 45, 53]
+
+catalog:
+  slots: [10,11,12,13,14,15,16, 19,20,21,22,23,24,25, 28,29,30,31,32,33,34]
+  admin-give: false
+  entry:
+    name: "<dark_gray>✦ <color:{tier_color}>{enchant}</color> <dark_gray>✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Tier <dark_gray>· {tier}"
+      - "<dark_gray>❘ <gray>Nivel máx. <dark_gray>· <white>{max_nivel_romano}"
+      - "<dark_gray>❘ <gray>Aplica a <dark_gray>· <white>{aplica}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "{descripcion}"
+  group-names:
+    SWORD: "Espadas"
+    AXE: "Hachas"
+    PICKAXE: "Picos"
+    HELMET: "Cascos"
+    CHESTPLATE: "Petos"
+    LEGGINGS: "Pantalones"
+    BOOTS: "Botas"
+    BOW: "Arcos"
+    MACE: "Mazas"
+
+items:
+
+  anterior:
+    slot: 48
+    material: SPECTRAL_ARROW
+    name: "<gray>« ᴀɴᴛᴇʀɪᴏʀ"
+    lore:
+      - "<dark_gray>❘ <gray>Página <dark_gray>· <white>{pagina}<gray>/<white>{paginas}"
+    actions:
+      - "sound: gui-click"
+      - "page: prev"
+
+  volver:
+    slot: 49
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore:
+      - "<dark_gray>❘ <gray>Mostrando <dark_gray>· <white>{mostrados}<gray> encantos"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: main_menu"
+
+  siguiente:
+    slot: 50
+    material: SPECTRAL_ARROW
+    name: "<gray>ꜱɪɢᴜɪᴇɴᴛᴇ »"
+    lore:
+      - "<dark_gray>❘ <gray>Página <dark_gray>· <white>{pagina}<gray>/<white>{paginas}"
+    actions:
+      - "sound: gui-click"
+      - "page: next"

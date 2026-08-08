@@ -1,0 +1,46 @@
+# ============================================================
+#  enchants/arco_celestial.yml — Arco Celestial
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: arco_celestial
+enabled: true
+
+display-name: "Arco Celestial"
+tier: divino
+max-level: 5
+icon: DRAGON_BREATH
+
+applicable-to:
+  - BOW
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Arco Celestial {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Tus flechas invocan la ira del cielo"
+  - "<gray>allí donde impactan."
+  - "<dark_gray>│ <gray>Probabilidad: <white>20% + 6%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>4.0 + 2.0</white> <gray>por nivel"
+
+fabled-skill: "FE_ArcoCelestial"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 20
+  chance-scale: 6
+  actions:
+    - type: lightning
+      target: victim
+    - type: damage
+      target: victim
+      value-base: 4
+      value-scale: 2
+    - type: sound
+      target: victim
+      value: ENTITY_LIGHTNING_BOLT_IMPACT
+      volume: 0.8
+      pitch: 1.4

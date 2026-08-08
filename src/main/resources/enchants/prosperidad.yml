@@ -1,0 +1,43 @@
+# ============================================================
+#  enchants/prosperidad.yml — Prosperidad
+#  Tier MITICO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: prosperidad
+enabled: true
+
+display-name: "Prosperidad"
+tier: mitico
+max-level: 4
+icon: GOLD_INGOT
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Prosperidad {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de <white>multiplicar</white> todo"
+  - "<gray>el botín del bloque."
+  - "<dark_gray>│ <gray>Probabilidad: <white>20% + 10%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Multiplicador: <white>x2 + x1</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: drop_multiplier
+  value-base: 2
+  value-scale: 1
+  chance-base: 20
+  chance-scale: 10
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

@@ -1,0 +1,55 @@
+# ============================================================
+#  skills/fe_flechahelada.yml — Skill nativa de Fabled 5
+#  Flecha Helada · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_FlechaHelada:
+  name: FE_FlechaHelada
+  type: Dynamic
+  max-level: 2
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: POWDER_SNOW_BUCKET
+  icon-key: ''
+  icon-lore:
+  - '&7&lFlecha Helada &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        POTION:
+          type: mechanic
+          data:
+            counts: 'true'
+            potion: Slowness
+            ambient: 'false'
+            tier-base: '0'
+            tier-scale: '0'
+            seconds-base: '2'
+            seconds-scale: '1'

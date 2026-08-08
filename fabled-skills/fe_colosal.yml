@@ -1,0 +1,66 @@
+# ============================================================
+#  skills/fe_colosal.yml — Skill nativa de Fabled 5
+#  Golpe devastador: 10% + 5% de probabilidad, +3.0 + 2.0 daño
+# ============================================================
+
+FE_Colosal:
+  name: FE_Colosal
+  type: Dynamic
+  max-level: 3
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: ANVIL
+  icon-key: ''
+  icon-lore:
+  - '&6&lColosal &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '10'
+            chance-scale: '5'
+          children:
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '3'
+                value-scale: '2'
+                true: 'false'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_PLAYER_ATTACK_CRIT
+                volume: '100'
+                pitch: '0.8'

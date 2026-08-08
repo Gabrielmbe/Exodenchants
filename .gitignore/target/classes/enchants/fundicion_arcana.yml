@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/fundicion_arcana.yml — Fundición Arcana
+#  Tier LEGENDARIO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: fundicion_arcana
+enabled: true
+
+display-name: "Fundición Arcana"
+tier: legendario
+max-level: 3
+icon: BLAST_FURNACE
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Fundición Arcana {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Funde el mineral <white>al instante</white>: obtienes"
+  - "<gray>lingotes en lugar de material bruto."
+  - "<dark_gray>│ <gray>Probabilidad: <white>60% + 15%</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: auto_smelt
+  value-base: 1
+  value-scale: 0
+  chance-base: 60
+  chance-scale: 15
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

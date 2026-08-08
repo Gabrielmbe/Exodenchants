@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/carniceria.yml — Carnicería
+#  Tier MITICO · nivel máximo 4
+# ============================================================
+
+id: carniceria
+enabled: true
+
+display-name: "Carnicería"
+tier: mitico
+max-level: 4
+icon: NETHERITE_SWORD
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Carnicería {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de un tajo brutal que"
+  - "<gray>ignora la armadura del enemigo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño real: <white>4.0 + 2.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Carniceria"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 15
+  chance-scale: 5
+  actions:
+    - type: damage
+      target: victim
+      value-base: 4
+      value-scale: 2
+      true-damage: true
+    - type: particle
+      target: victim
+      value: Crit
+      count: 15
+    - type: sound
+      target: victim
+      value: ENTITY_PLAYER_ATTACK_CRIT
+      volume: 0.8
+      pitch: 0.7

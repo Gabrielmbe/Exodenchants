@@ -1,0 +1,75 @@
+# ============================================================
+#  skills/fe_inmortal.yml — Skill nativa de Fabled 5
+#  Inmortal · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Inmortal:
+  name: FE_Inmortal
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHERITE_HELMET
+  icon-key: ''
+  icon-lore:
+  - '&d&lInmortal &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    TOOK_PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'false'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '15'
+            chance-scale: '5'
+          children:
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Resistance
+                ambient: 'false'
+                tier-base: '2'
+                tier-scale: '0'
+                seconds-base: '4'
+                seconds-scale: '1'
+            HEAL:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: health
+                value-base: '2'
+                value-scale: '1'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ITEM_TOTEM_USE
+                volume: '50'
+                pitch: '1.3'

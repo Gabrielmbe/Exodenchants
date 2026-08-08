@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/reforestador.yml — Reforestador
+#  Tier COMUN · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: reforestador
+enabled: true
+
+display-name: "Reforestador"
+tier: comun
+max-level: 1
+icon: OAK_SAPLING
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gray>Reforestador {nivel_romano}"
+
+description:
+  - "<gray>Replanta un <white>brote</white> en el tocón"
+  - "<gray>automáticamente al talar."
+  - "<dark_gray>│ <gray>Compatible con todas las maderas"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: auto_replant
+  value-base: 1
+  value-scale: 0
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

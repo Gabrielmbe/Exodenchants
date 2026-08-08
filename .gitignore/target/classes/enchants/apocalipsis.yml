@@ -1,0 +1,52 @@
+# ============================================================
+#  enchants/apocalipsis.yml — Apocalipsis
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: apocalipsis
+enabled: true
+
+display-name: "Apocalipsis"
+tier: divino
+max-level: 5
+icon: END_CRYSTAL
+
+applicable-to:
+  - SWORD
+  - AXE
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Apocalipsis {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Invoca una devastación divina sobre"
+  - "<gray>tu objetivo: rayo y daño colosal."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño extra: <white>6.0 + 3.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Apocalipsis"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 12
+  chance-scale: 4
+  actions:
+    - type: lightning
+      target: victim
+    - type: damage
+      target: victim
+      value-base: 6
+      value-scale: 3
+    - type: particle
+      target: victim
+      value: Explode
+      count: 20
+    - type: sound
+      target: victim
+      value: ENTITY_GENERIC_EXPLODE
+      volume: 0.9
+      pitch: 0.9

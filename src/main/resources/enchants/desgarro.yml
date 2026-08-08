@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/desgarro.yml — Desgarro
+# ============================================================
+
+id: desgarro
+enabled: true
+
+display-name: "Desgarro"
+tier: comun
+max-level: 2
+icon: IRON_SWORD
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gray>Desgarro {nivel_romano}"
+
+description:
+  - "<gray>Debilita a tu objetivo al golpear."
+  - "<dark_gray>│ <gray>Duración: <white>3s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_Desgarro"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: victim
+      value: Weakness
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1

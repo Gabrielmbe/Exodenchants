@@ -1,0 +1,43 @@
+# ============================================================
+#  enchants/detonador.yml — Detonador
+#  Tier DIVINO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: detonador
+enabled: true
+
+display-name: "Detonador"
+tier: divino
+max-level: 3
+icon: TNT
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Detonador {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Acumula <white>cargas</white> al excavar y libera"
+  - "<gray>una detonación <white>5x5</white> al llenarse."
+  - "<dark_gray>│ <gray>Cargas: <white>12 - 3</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>El contador se ve en la barra de acción"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: charge_blast
+  value-base: 12
+  value-scale: -3
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

@@ -1,0 +1,156 @@
+# ============================================================
+#  guis/categories.yml — Navegación por tipo de ítem
+# ------------------------------------------------------------
+#  fila 2 (10·12·14·16) = armas y herramientas
+#  fila 3 (19-25)       = franja decorativa
+#  fila 4 (28·30·32·34) = arcos y armadura
+#  fila 5 (40)          = volver
+# ============================================================
+
+menu:
+  id: categories
+  title: "<dark_gray>✦ <gradient:#7B2CBF:#C77DFF>ᴄᴀᴛᴇɢᴏʀíᴀꜱ</gradient> <dark_gray>✦"
+  rows: 5
+  open-sound: gui-open
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,37,38,39,40,41,42,43,44]
+  accents:
+    material: PURPLE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 36, 44, 19, 20, 21, 22, 23, 24, 25]
+
+items:
+
+  espadas:
+    slot: 10
+    material: DIAMOND_SWORD
+    name: "<white>✦ ᴇꜱᴘᴀᴅᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_SWORD}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: SWORD"
+
+  hachas:
+    slot: 12
+    material: DIAMOND_AXE
+    name: "<white>✦ ʜᴀᴄʜᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_AXE}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: AXE"
+
+  picos:
+    slot: 14
+    material: DIAMOND_PICKAXE
+    name: "<white>✦ ᴘɪᴄᴏꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_PICKAXE}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: PICKAXE"
+
+  mazas:
+    slot: 16
+    material: MACE
+    name: "<white>✦ ᴍᴀᴢᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_MACE}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: MACE"
+
+  arcos:
+    slot: 28
+    material: BOW
+    name: "<white>✦ ᴀʀᴄᴏꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_BOW}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: BOW"
+
+  cascos:
+    slot: 30
+    material: DIAMOND_HELMET
+    name: "<white>✦ ᴄᴀꜱᴄᴏꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_HELMET}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: HELMET"
+
+  petos:
+    slot: 32
+    material: DIAMOND_CHESTPLATE
+    name: "<white>✦ ᴘᴇᴛᴏꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_CHESTPLATE}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: CHESTPLATE"
+
+  botas:
+    slot: 34
+    material: DIAMOND_BOOTS
+    name: "<white>✦ ʙᴏᴛᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_BOOTS}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: BOOTS"
+
+  pantalones:
+    slot: 22
+    material: DIAMOND_LEGGINGS
+    name: "<white>✦ ᴘᴀɴᴛᴀʟᴏɴᴇꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{grupo_LEGGINGS}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-filter: LEGGINGS"
+
+  volver:
+    slot: 40
+    material: ARROW
+    name: "<gray>« ᴠᴏʟᴠᴇʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "open-gui: main_menu"

@@ -1,0 +1,64 @@
+# ============================================================
+#  skills/fe_avaricia.yml — Skill nativa de Fabled 5
+#  Avaricia · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Avaricia:
+  name: FE_Avaricia
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: GOLD_BLOCK
+  icon-key: ''
+  icon-lore:
+  - '&d&lAvaricia &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    BLOCK_BREAK:
+      type: trigger
+      data:
+        material: Any
+        data: '-1'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '25'
+            chance-scale: '10'
+          children:
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Haste
+                ambient: 'false'
+                tier-base: '2'
+                tier-scale: '0'
+                seconds-base: '8'
+                seconds-scale: '2'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: BLOCK_AMETHYST_BLOCK_CHIME
+                volume: '50'
+                pitch: '1.5'

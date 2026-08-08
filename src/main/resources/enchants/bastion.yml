@@ -1,0 +1,45 @@
+# ============================================================
+#  enchants/bastion.yml — Bastión
+# ============================================================
+
+id: bastion
+enabled: true
+
+display-name: "Bastión"
+tier: legendario
+max-level: 3
+icon: NETHERITE_CHESTPLATE
+
+applicable-to:
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Bastión {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de resistencia mejorada"
+  - "<gray>y regeneración al recibir daño."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 6%</white> <gray>por nivel"
+
+fabled-skill: "FE_Bastion"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 12
+  chance-scale: 6
+  actions:
+    - type: potion
+      target: self
+      value: Resistance
+      amplifier: 1
+      seconds-base: 4
+      seconds-scale: 2
+    - type: potion
+      target: self
+      value: Regeneration
+      amplifier: 0
+      seconds-base: 4
+      seconds-scale: 2

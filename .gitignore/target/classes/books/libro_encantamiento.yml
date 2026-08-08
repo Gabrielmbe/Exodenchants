@@ -1,0 +1,50 @@
+# ============================================================
+#  FabledCustomEnchants — books/libro_encantamiento.yml
+#  Plantilla del Libro de Encantamiento
+# ------------------------------------------------------------
+#  Placeholders internos resueltos al generar el libro:
+#    {id}            → id del encantamiento (vampirismo, zeus...)
+#    {enchant}       → nombre visible del encantamiento
+#    {nivel}         → nivel numérico (1, 2, 3)
+#    {nivel_romano}  → nivel en romano (I, II, III)
+#    {exito}         → % de éxito sorteado en pools/tiers.yml
+#    {ruptura}       → % de ruptura sorteado en pools/tiers.yml
+#    {tier}          → display del tier (MiniMessage)
+#    {tier_id}       → id del tier (comun | raro | legendario)
+#    {tier_color}    → color hex del tier
+# ============================================================
+
+material: ENCHANTED_BOOK
+glint: "{tier_glint}"          # Tomado de pools/tiers.yml → book-glint
+stack-size: 1
+
+display-name: "<dark_gray>» <color:{tier_color}>{enchant} {nivel_romano}</color> <dark_gray>«"
+
+# Lore estético (los datos reales viven en Data Components, no aquí)
+lore:
+  - ""
+  - "<dark_gray>│ <gray>Tier <dark_gray>· {tier}"
+  - "<dark_gray>│ <gray>Nivel <dark_gray>· <white>{nivel_romano}"
+  - ""
+  - "<dark_gray>│ <green>✔ Éxito <dark_gray>· <white>{exito}%"
+  - "<dark_gray>│ <red>✖ Ruptura <dark_gray>· <white>{ruptura}%"
+  - ""
+  - "<dark_purple>Arrastra este libro sobre un ítem"
+  - "<dark_purple>compatible y haz click para aplicar."
+
+# ------------------------------------------------------------
+# DATA COMPONENTS (minecraft:custom_data → PersistentDataContainer)
+# Claves definidas en config.yml → storage.keys
+# Es la ÚNICA fuente de verdad que lee el módulo drag_and_drop.
+# ------------------------------------------------------------
+data-components:
+  fe_id: "{id}"              # STRING
+  fe_level: "{nivel}"        # INTEGER
+  fe_success: "{exito}"      # INTEGER (1-100)
+  fe_destroy: "{ruptura}"    # INTEGER (0-100)
+  fe_tier: "{tier_id}"       # STRING
+
+# Oculta los tooltips vanilla que ensucian la estética
+hide-flags:
+  - HIDE_ENCHANTS
+  - HIDE_ADDITIONAL_TOOLTIP

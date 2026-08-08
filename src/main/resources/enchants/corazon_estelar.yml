@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/corazon_estelar.yml — Corazón Estelar
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: corazon_estelar
+enabled: true
+
+display-name: "Corazón Estelar"
+tier: divino
+max-level: 5
+icon: HEART_OF_THE_SEA
+
+applicable-to:
+  - LEGGINGS
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Corazón Estelar {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Un núcleo estelar te blinda con"
+  - "<gray>vida adicional al ser herido."
+  - "<dark_gray>│ <gray>Duración: <white>6s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_CorazonEstelar"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: self
+      value: Absorption
+      amplifier: 2
+      seconds-base: 6
+      seconds-scale: 2
+    - type: potion
+      target: self
+      value: Resistance
+      amplifier: 1
+      seconds-base: 6
+      seconds-scale: 2
+    - type: particle
+      target: self
+      value: EnchantmentTable
+      count: 15

@@ -1,0 +1,44 @@
+# ============================================================
+#  enchants/aturdir.yml — Aturdir
+# ============================================================
+
+id: aturdir
+enabled: true
+
+display-name: "Aturdir"
+tier: raro
+max-level: 3
+icon: GOLDEN_HELMET
+
+applicable-to:
+  - SWORD
+  - MACE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Aturdir {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de aturdir a tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>10% + 5%</white> <gray>por nivel"
+
+fabled-skill: "FE_Aturdir"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 10
+  chance-scale: 5
+  actions:
+    - type: potion
+      target: victim
+      value: Slowness
+      amplifier: 3
+      seconds-base: 1
+      seconds-scale: 0
+    - type: sound
+      target: victim
+      value: BLOCK_ANVIL_LAND
+      volume: 0.6
+      pitch: 1.4

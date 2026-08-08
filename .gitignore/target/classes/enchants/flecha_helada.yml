@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/flecha_helada.yml — Flecha Helada
+# ============================================================
+
+id: flecha_helada
+enabled: true
+
+display-name: "Flecha Helada"
+tier: comun
+max-level: 2
+icon: POWDER_SNOW_BUCKET
+
+applicable-to:
+  - BOW
+
+conflicts: [llamarada]
+
+lore-line: "<gray>Flecha Helada {nivel_romano}"
+
+description:
+  - "<gray>Tus impactos ralentizan al objetivo."
+  - "<dark_gray>│ <gray>Duración: <white>2s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_FlechaHelada"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: victim
+      value: Slowness
+      amplifier: 0
+      seconds-base: 2
+      seconds-scale: 1

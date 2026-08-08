@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/aserradero.yml — Aserradero
+#  Tier RARO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: aserradero
+enabled: true
+
+display-name: "Aserradero"
+tier: raro
+max-level: 3
+icon: OAK_PLANKS
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Aserradero {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Cada tronco entrega <white>tablones extra</white>"
+  - "<gray>ya procesados."
+  - "<dark_gray>│ <gray>Tablones: <white>2 + 2</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: lumber_haul
+  value-base: 2
+  value-scale: 2
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

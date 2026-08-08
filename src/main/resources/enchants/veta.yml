@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/veta.yml — Veta
+# ============================================================
+
+id: veta
+enabled: true
+
+display-name: "Veta"
+tier: comun
+max-level: 2
+icon: IRON_PICKAXE
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gray>Veta {nivel_romano}"
+
+description:
+  - "<gray>Ganas prisa al romper bloques."
+  - "<dark_gray>│ <gray>Duración: <white>4s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_Veta"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: mine
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: self
+      value: Haste
+      amplifier: 0
+      seconds-base: 4
+      seconds-scale: 2

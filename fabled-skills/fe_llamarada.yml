@@ -1,0 +1,51 @@
+# ============================================================
+#  skills/fe_llamarada.yml — Skill nativa de Fabled 5
+#  Prende fuego al objetivo: 2s + 1s por nivel
+# ============================================================
+
+FE_Llamarada:
+  name: FE_Llamarada
+  type: Dynamic
+  max-level: 2
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: BLAZE_POWDER
+  icon-key: ''
+  icon-lore:
+  - '&7&lLlamarada &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        FIRE:
+          type: mechanic
+          data:
+            counts: 'true'
+            seconds-base: '2'
+            seconds-scale: '1'

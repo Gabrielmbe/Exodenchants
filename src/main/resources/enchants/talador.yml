@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/talador.yml — Talador
+#  Tier LEGENDARIO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: talador
+enabled: true
+
+display-name: "Talador"
+tier: legendario
+max-level: 3
+icon: DIAMOND_AXE
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Talador {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Tumba el <white>árbol completo</white> de un"
+  - "<gray>solo golpe, ramas incluidas."
+  - "<dark_gray>│ <gray>Troncos: <white>20 + 20</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: tree_feller
+  value-base: 20
+  value-scale: 20
+  chance-base: 100
+  chance-scale: 0
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

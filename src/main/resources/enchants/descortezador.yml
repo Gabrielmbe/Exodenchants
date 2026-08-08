@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/descortezador.yml — Descortezador
+#  Tier LEGENDARIO · MECÁNICA NATIVA
+# ------------------------------------------------------------
+#  Este encantamiento no usa skills de Fabled: su comportamiento
+#  manipula bloques, drops, experiencia o durabilidad, algo que
+#  ningún sistema de componentes puede expresar. Lo ejecuta el
+#  motor de mecánicas propio del plugin, así que funciona
+#  siempre que el ítem lo lleve.
+# ============================================================
+
+id: descortezador
+enabled: true
+
+display-name: "Descortezador"
+tier: legendario
+max-level: 3
+icon: STRIPPED_OAK_LOG
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#FFD166:#FFB703>Descortezador {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de obtener un <white>tronco"
+  - "<gray><white>adicional</white> por cada uno talado."
+  - "<dark_gray>│ <gray>Probabilidad: <white>20% + 15%</white> <gray>por nivel"
+
+# --- Mecánica nativa: valor = value-base + value-scale x (nivel - 1) ---
+mechanic:
+  type: bark_strip
+  value-base: 1
+  value-scale: 0
+  chance-base: 20
+  chance-scale: 15
+
+# Sin skill de Fabled: el motor nativo se encarga
+fabled-skill: ""
+sync-level-with-skill: false

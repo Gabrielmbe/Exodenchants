@@ -1,0 +1,73 @@
+# ============================================================
+#  skills/fe_tormenta.yml — Skill nativa de Fabled 5
+#  Tormenta · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Tormenta:
+  name: FE_Tormenta
+  type: Dynamic
+  max-level: 4
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: TRIDENT
+  icon-key: ''
+  icon-lore:
+  - '&d&lTormenta &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '12'
+            chance-scale: '4'
+          children:
+            LIGHTNING:
+              type: mechanic
+              data:
+                counts: 'true'
+                damage: 'true'
+                forward: '0'
+                right: '0'
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '3'
+                value-scale: '1.5'
+                true: 'false'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_LIGHTNING_BOLT_THUNDER
+                volume: '80'
+                pitch: '1.1'

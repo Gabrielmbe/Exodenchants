@@ -1,0 +1,78 @@
+# ============================================================
+#  skills/fe_egida.yml — Skill nativa de Fabled 5
+#  Égida · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_Egida:
+  name: FE_Egida
+  type: Dynamic
+  max-level: 5
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: SHIELD
+  icon-key: ''
+  icon-lore:
+  - '&d&lÉgida &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    TOOK_PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'false'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '15'
+            chance-scale: '4'
+          children:
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Resistance
+                ambient: 'false'
+                tier-base: '3'
+                tier-scale: '0'
+                seconds-base: '5'
+                seconds-scale: '1'
+            POTION:
+              type: mechanic
+              data:
+                counts: 'true'
+                potion: Absorption
+                ambient: 'false'
+                tier-base: '2'
+                tier-scale: '0'
+                seconds-base: '5'
+                seconds-scale: '1'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: BLOCK_BEACON_ACTIVATE
+                volume: '60'
+                pitch: '1.4'

@@ -1,0 +1,35 @@
+# ============================================================
+#  dusts/polvo_estelar.yml — Polvo Estelar
+# ------------------------------------------------------------
+#  Consumible de gama alta pensado para los libros Míticos y
+#  Divinos, donde la ruptura base llega al 60%.
+#
+#  Placeholders: {polvo} {reduccion} {precio} {color}
+# ============================================================
+
+id: polvo_estelar
+enabled: true
+
+display-name: "Polvo Estelar"
+material: NETHER_STAR
+glint: true
+color: "#F72585"
+
+# Puntos porcentuales que resta al % de ruptura del libro
+reduce: 40
+
+# Precio en la tienda de polvos (economía vía Vault)
+price: 520000
+
+item-name: "<dark_gray>» <color:{color}>{polvo}</color> <dark_gray>«"
+
+lore:
+  - ""
+  - "<gray>Polvo de estrella molida. Neutraliza"
+  - "<gray>la inestabilidad de los libros míticos."
+  - ""
+  - "<dark_gray>│ <green>▼ Ruptura <dark_gray>· <white>-{reduccion}%"
+  - "<dark_gray>│ <gray>Valor <dark_gray>· <white>${precio}"
+  - ""
+  - "<dark_purple>Arrastra este polvo sobre un libro"
+  - "<dark_purple>de encantamiento para aplicarlo."

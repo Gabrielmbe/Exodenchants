@@ -1,0 +1,80 @@
+# ============================================================
+#  skills/fe_juiciofinal.yml — Skill nativa de Fabled 5
+#  Juicio Final · escalado nativo base + scale por nivel
+# ============================================================
+
+FE_JuicioFinal:
+  name: FE_JuicioFinal
+  type: Dynamic
+  max-level: 5
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHERITE_INGOT
+  icon-key: ''
+  icon-lore:
+  - '&d&lJuicio Final &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            chance-base: '10'
+            chance-scale: '3'
+          children:
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                value-base: '8'
+                value-scale: '4'
+                true: 'true'
+            PARTICLE:
+              type: mechanic
+              data:
+                counts: 'true'
+                particle: EnchantmentTable
+                material: DIRT
+                type: Sphere
+                radius: '1'
+                particles-base: '25'
+                particles-scale: '2'
+                frequency: '0.0'
+                forward: '0'
+                upward: '1'
+                right: '0'
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: BLOCK_BEACON_POWER_SELECT
+                volume: '90'
+                pitch: '0.7'

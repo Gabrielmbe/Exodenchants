@@ -1,0 +1,45 @@
+# ============================================================
+#  dusts/esencia_menor.yml — Esencia de Fortuna
+# ------------------------------------------------------------
+#  mode: success  ->  SUMA puntos al % de ÉXITO del libro.
+#  (Los polvos con mode: destroy restan % de ruptura.)
+#
+#  Se usa arrastrando la esencia sobre el libro: el efecto es
+#  garantizado, sin tirada, y consume una unidad.
+#
+#  El valor real viaja en Data Components (fd_id, fd_mode,
+#  fd_value); el Lore es solo estética.
+#
+#  Placeholders: {polvo} {valor} {aumento} {precio} {color}
+# ============================================================
+
+id: esencia_menor
+enabled: true
+
+display-name: "Esencia de Fortuna"
+material: LAPIS_LAZULI
+glint: false
+color: "#90E0EF"
+
+# Modo del consumible: success = sube el % de éxito
+mode: success
+
+# Puntos porcentuales que SUMA al % de éxito del libro
+# (techo en config.yml -> limits.max-success-rate)
+value: 10
+
+# Precio en la tienda de polvos (economía vía Vault)
+price: 150000
+
+item-name: "<dark_gray>» <color:{color}>{polvo}</color> <dark_gray>«"
+
+lore:
+  - ""
+  - "<gray>Una chispa de fortuna condensada"
+  - "<gray>que guía la energía del libro."
+  - ""
+  - "<dark_gray>│ <green>▲ Éxito <dark_gray>· <white>+{aumento}%"
+  - "<dark_gray>│ <gray>Valor <dark_gray>· <white>${precio}"
+  - ""
+  - "<dark_purple>Arrastra esta esencia sobre un libro"
+  - "<dark_purple>de encantamiento para aplicarla."

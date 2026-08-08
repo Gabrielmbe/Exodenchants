@@ -1,0 +1,42 @@
+# ============================================================
+#  enchants/sangrado.yml — Sangrado
+# ============================================================
+
+id: sangrado
+enabled: true
+
+display-name: "Sangrado"
+tier: raro
+max-level: 3
+icon: REDSTONE_BLOCK
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Sangrado {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de causar daño verdadero."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Daño: <white>1.5 + 1.0</white> <gray>por nivel"
+
+fabled-skill: "FE_Sangrado"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 15
+  chance-scale: 5
+  actions:
+    - type: damage
+      target: victim
+      value-base: 1.5
+      value-scale: 1
+      true-damage: true
+    - type: particle
+      target: victim
+      value: Dust
+      count: 10

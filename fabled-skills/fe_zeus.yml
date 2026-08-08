@@ -1,0 +1,85 @@
+# ============================================================
+#  FabledCustomEnchants — skills/fe_zeus.yml
+#  Skill dinámica NATIVA de Fabled 5 (copiar a
+#  plugins/Fabled/dynamic/skill/ y ejecutar /fabled reload)
+# ------------------------------------------------------------
+#  Efecto: al infligir daño físico, probabilidad de invocar un
+#  rayo sobre la víctima con daño extra escalado.
+#    Probabilidad: 8% + 4% por nivel  (Nv3 = 20%)
+#    Daño extra:   2.0 + 1.0 por nivel (Nv3 = 5.0)
+# ============================================================
+
+FE_Zeus:
+  name: FE_Zeus
+  type: Dynamic
+  max-level: 3
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: NETHER_STAR
+  icon-key: ''
+  icon-lore:
+  - '&6&lZeus &7(Nv {level})'
+  - '&8│ &7Invoca un rayo al golpear.'
+  - '&8│ &7Probabilidad: &f{attr:chance}%'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        # target: true → los efectos hijos se aplican a la VÍCTIMA
+        target: 'true'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        CHANCE:
+          type: condition
+          data:
+            # ESCALADO NATIVO: probabilidad = base + scale × (nivel − 1)
+            chance-base: '8'
+            chance-scale: '4'
+          children:
+            LIGHTNING:
+              type: mechanic
+              data:
+                counts: 'true'
+                damage: 'true'
+                forward: '0'
+                right: '0'
+            DAMAGE:
+              type: mechanic
+              data:
+                counts: 'true'
+                type: damage
+                # Daño extra del rayo = 2.0 + 1.0 por nivel
+                value-base: '2'
+                value-scale: '1'
+                true: 'false'
+                classifier: lightning
+            SOUND:
+              type: mechanic
+              data:
+                counts: 'true'
+                sound: ENTITY_LIGHTNING_BOLT_THUNDER
+                volume: '80'
+                pitch: '1.2'

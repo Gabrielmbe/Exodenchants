@@ -1,0 +1,53 @@
+# ============================================================
+#  enchants/egida.yml — Égida
+#  Tier DIVINO · nivel máximo 5
+# ============================================================
+
+id: egida
+enabled: true
+
+display-name: "Égida"
+tier: divino
+max-level: 5
+icon: SHIELD
+
+applicable-to:
+  - HELMET
+  - CHESTPLATE
+
+conflicts: []
+
+lore-line: "<gradient:#00F5D4:#4CC9F0>Égida {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Un escudo divino absorbe el castigo"
+  - "<gray>que iba dirigido a ti."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Duración: <white>5s + 1s</white> <gray>por nivel"
+
+fabled-skill: "FE_Egida"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: defend
+  chance-base: 15
+  chance-scale: 4
+  actions:
+    - type: potion
+      target: self
+      value: Resistance
+      amplifier: 3
+      seconds-base: 5
+      seconds-scale: 1
+    - type: potion
+      target: self
+      value: Absorption
+      amplifier: 2
+      seconds-base: 5
+      seconds-scale: 1
+    - type: sound
+      target: self
+      value: BLOCK_BEACON_ACTIVATE
+      volume: 0.6
+      pitch: 1.4

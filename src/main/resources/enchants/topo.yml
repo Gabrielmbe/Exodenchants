@@ -1,0 +1,38 @@
+# ============================================================
+#  enchants/topo.yml — Topo
+# ============================================================
+
+id: topo
+enabled: true
+
+display-name: "Topo"
+tier: comun
+max-level: 2
+icon: CARVED_PUMPKIN
+
+applicable-to:
+  - PICKAXE
+
+conflicts: []
+
+lore-line: "<gray>Topo {nivel_romano}"
+
+description:
+  - "<gray>Visión nocturna al minar."
+  - "<dark_gray>│ <gray>Duración: <white>8s + 4s</white> <gray>por nivel"
+
+fabled-skill: "FE_Topo"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: mine
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: self
+      value: NightVision
+      amplifier: 0
+      seconds-base: 8
+      seconds-scale: 4

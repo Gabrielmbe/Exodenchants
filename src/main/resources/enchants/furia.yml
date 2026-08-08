@@ -1,0 +1,44 @@
+# ============================================================
+#  enchants/furia.yml — Furia
+# ============================================================
+
+id: furia
+enabled: true
+
+display-name: "Furia"
+tier: raro
+max-level: 3
+icon: BLAZE_ROD
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Furia {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Al matar, ganas fuerza y velocidad."
+  - "<dark_gray>│ <gray>Duración: <white>4s + 2s</white> <gray>por nivel"
+
+fabled-skill: "FE_Furia"
+sync-level-with-skill: true
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: kill
+  chance-base: 100
+  chance-scale: 0
+  actions:
+    - type: potion
+      target: self
+      value: Strength
+      amplifier: 0
+      seconds-base: 4
+      seconds-scale: 2
+    - type: potion
+      target: self
+      value: Speed
+      amplifier: 0
+      seconds-base: 4
+      seconds-scale: 2

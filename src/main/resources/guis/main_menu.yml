@@ -1,0 +1,176 @@
+# ============================================================
+#  guis/main_menu.yml — Menú principal · Dark Mode premium
+# ------------------------------------------------------------
+#  Retícula simétrica: dos filas de cuatro accesos separadas por
+#  una franja decorativa, y el cierre centrado abajo.
+#    fila 2 (10·12·14·16) = comprar
+#    fila 3 (19-25)       = franja decorativa
+#    fila 4 (28·30·32·34) = consultar
+#    fila 5 (40)          = cerrar
+# ============================================================
+
+menu:
+  id: main_menu
+  title: "<dark_gray>✦ <gradient:#7B2CBF:#C77DFF>ᴇɴᴄᴀɴᴛᴀᴍɪᴇɴᴛᴏꜱ</gradient> <dark_gray>✦"
+  rows: 5
+  open-sound: gui-open
+
+# --- Capas decorativas: se pintan en orden fill → border → accents ---
+layout:
+  fill:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+    slots: [0,1,2,3,4,5,6,7,8, 9,17, 18,26, 27,35, 36,37,38,39,40,41,42,43,44]
+  accents:
+    material: PURPLE_STAINED_GLASS_PANE
+    name: " "
+    slots: [0, 8, 36, 44, 19, 20, 21, 22, 23, 24, 25]
+
+items:
+
+  tienda-libros:
+    slot: 10
+    material: ENCHANTING_TABLE
+    name: "<gradient:#7B2CBF:#C77DFF>✦ ᴛɪᴇɴᴅᴀ ᴅᴇ ʟɪʙʀᴏꜱ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Cinco tiers de libro:"
+      - "<dark_gray>❘ <gray>Común <dark_gray>· <#C77DFF>Raro <dark_gray>· <#FFB703>Legendario"
+      - "<dark_gray>❘ <#F72585>Mítico <dark_gray>· <#00F5D4>Divino"
+      - ""
+      - "<dark_gray>❘ <gray>Encantos <dark_gray>· <white>{total} disponibles"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para abrir"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: enchanter_shop"
+
+  tienda-polvos:
+    slot: 12
+    material: GLOWSTONE_DUST
+    name: "<gradient:#48CAE4:#90E0EF>✦ ᴘᴏʟᴠᴏꜱ ʏ ᴇꜱᴇɴᴄɪᴀꜱ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Baja la <white>ruptura</white> o sube el"
+      - "<gray><white>éxito</white> <gray>de tus libros."
+      - ""
+      - "<dark_gray>❘ <gray>Consumibles <dark_gray>· <white>{polvos}"
+      - "<dark_gray>❘ <gray>Desde <dark_gray>· <white>${polvo_precio_min}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#48CAE4>➜ Click para abrir"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: dust_shop"
+
+  mercado:
+    slot: 14
+    material: ENDER_CHEST
+    name: "<gradient:#F72585:#B5179E>✦ ᴍᴇʀᴄᴀᴅᴏ ɴᴇɢʀᴏ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Ofertas rotativas con <white>descuento</white>"
+      - "<gray>y libros de <white>éxito mejorado<gray>."
+      - ""
+      - "<dark_gray>❘ <gray>Ofertas <dark_gray>· <white>{mercado_ofertas}"
+      - "<dark_gray>❘ <gray>Rotan en <dark_gray>· <white>{mercado_tiempo}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#F72585>➜ Click para entrar"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: black_market"
+
+  categorias:
+    slot: 16
+    material: CHEST
+    name: "<white>✦ ᴄᴀᴛᴇɢᴏʀíᴀꜱ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Filtra los encantamientos por"
+      - "<gray>tipo de ítem: espadas, hachas,"
+      - "<gray>picos, mazas, arcos y armadura."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para filtrar"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: categories"
+
+  catalogo:
+    slot: 28
+    material: AMETHYST_SHARD
+    name: "<#C77DFF>✦ ᴄᴀᴛáʟᴏɢᴏ ᴄᴏᴍᴘʟᴇᴛᴏ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Los <white>{total}</white> <gray>encantamientos con"
+      - "<gray>sus niveles e ítems compatibles."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<dark_purple>➜ Click para explorar"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: catalog"
+
+  ranking:
+    slot: 30
+    material: GOLDEN_HELMET
+    name: "<gradient:#FFD166:#FFB703>✦ ʀᴀɴᴋɪɴɢ ✦</gradient>"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Los mejores encantadores"
+      - "<gray>del servidor."
+      - ""
+      - "<dark_gray>❘ <gray>Tu puesto <dark_gray>· <white>{rank}"
+      - "<dark_gray>❘ <gray>Tus puntos <dark_gray>· <white>{score}"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#FFB703>➜ Click para ver"
+    actions:
+      - "sound: gui-click"
+      - "open-gui: ranking"
+
+  info:
+    slot: 32
+    material: BOOK
+    name: "<white>✦ ᴄóᴍᴏ ꜰᴜɴᴄɪᴏɴᴀ ✦"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<white>1. <gray>Compra un libro en la tienda."
+      - "<white>2. <gray>Súbele el éxito con una esencia"
+      - "   <gray>o bájale la ruptura con un polvo."
+      - "<white>3. <gray>Arrástralo sobre un ítem y click."
+      - ""
+      - "<gray>Si la tirada <dark_gray>(1-100)</dark_gray> <gray>es"
+      - "<white>≤ % de éxito<gray>, el encanto se aplica."
+      - ""
+      - "<dark_gray>❘ <gray>Máximo <dark_gray>· <white>6 encantos por ítem"
+      - "<dark_gray>❘ <#FFD166>Racha<gray>: cada fallo mejora el"
+      - "<dark_gray>❘ <gray>siguiente intento del mismo tier."
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    actions:
+      - "sound: gui-click"
+
+  inspeccion:
+    slot: 34
+    material: SPYGLASS
+    name: "<#FFB703>✦ ᴍᴏᴅᴏ ɪɴꜱᴘᴇᴄᴄɪóɴ ✦ <dark_gray>(ᴀᴅᴍɪɴ)"
+    lore:
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<gray>Actívalo y haz click sobre una"
+      - "<gray>espada, pico, hacha o armadura"
+      - "<gray>para ver <white>solo</white> sus encantos."
+      - ""
+      - "<dark_gray>❘ <gray>Permiso <dark_gray>· <white>fce.admin"
+      - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+      - "<#FFB703>➜ Click para activar/desactivar"
+    actions:
+      - "sound: gui-click"
+      - "toggle-inspect"
+
+  cerrar:
+    slot: 40
+    material: BARRIER
+    name: "<red>✖ ᴄᴇʀʀᴀʀ"
+    lore: []
+    actions:
+      - "sound: gui-click"
+      - "close"

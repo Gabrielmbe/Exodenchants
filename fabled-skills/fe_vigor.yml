@@ -1,0 +1,52 @@
+# ============================================================
+#  skills/fe_vigor.yml — Skill nativa de Fabled 5
+#  Cura al recibir daño: 0.5 + 0.5 por nivel
+# ============================================================
+
+FE_Vigor:
+  name: FE_Vigor
+  type: Dynamic
+  max-level: 2
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown: 0
+  mana: 0
+  min-spent: 0
+  cast-message: ''
+  combo: ''
+  indicator: 2D
+  icon: GOLDEN_APPLE
+  icon-key: ''
+  icon-lore:
+  - '&7&lVigor &7(Nv {level})'
+  attributes:
+    level-base: 1
+    level-scale: 1
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    TOOK_PHYSICAL_DAMAGE:
+      type: trigger
+      data:
+        target: 'false'
+        counts: 'true'
+        dmg-min-base: '0'
+        dmg-min-scale: '0'
+        dmg-max-base: '999'
+        dmg-max-scale: '0'
+      children:
+        HEAL:
+          type: mechanic
+          data:
+            counts: 'true'
+            type: health
+            value-base: '0.5'
+            value-scale: '0.5'
