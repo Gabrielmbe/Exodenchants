@@ -63,7 +63,7 @@ public class DragAndDropListener implements Listener {
 
     public DragAndDropListener(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
-        this.namedKey = new NamespacedKey(plugin, "fce_named");
+        this.namedKey = Keys.of("fce_named");
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

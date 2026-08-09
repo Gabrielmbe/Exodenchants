@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -14,12 +15,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Fabrica de Libros de Encantamiento a partir de la plantilla
  * books/libro_encantamiento.yml. Estetica en Lore (MiniMessage),
  * datos reales en Data Components (PDC).
+ *
+ * Placeholder nuevo: {aplicable} -> lista legible de los grupos de items
+ * donde puede usarse el encantamiento (enchants/<id>.yml -> applicable-to).
+ * Los nombres visibles se personalizan en libro_encantamiento.yml ->
+ * group-names; si un grupo no esta ahi, se usa un nombre por defecto.
  */
 public class BookFactory {
 
@@ -28,12 +37,21 @@ public class BookFactory {
 
     private String displayName = "{enchant} {nivel_romano}";
     private List<String> loreTemplate = new ArrayList<>();
+    private final Map<String, String> groupNames = new LinkedHashMap<>();
 
     public void load(JavaPlugin plugin) {
         YamlConfiguration yml = YamlConfiguration.loadConfiguration(
                 new File(plugin.getDataFolder(), "books/libro_encantamiento.yml"));
         displayName = yml.getString("display-name", displayName);
         loreTemplate = yml.getStringList("lore");
+
+        groupNames.clear();
+        ConfigurationSection names = yml.getConfigurationSection("group-names");
+        if (names != null) {
+            for (String key : names.getKeys(false)) {
+                groupNames.put(key.toUpperCase(Locale.ROOT), names.getString(key, key));
+            }
+        }
     }
 
     public static String roman(int level) {
@@ -72,11 +90,9 @@ public class BookFactory {
         if (book == null || !book.hasItemMeta()) return;
         ItemMeta meta = book.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-
         int level = pdc.getOrDefault(Keys.ENCHANT_LEVEL, PersistentDataType.INTEGER, 1);
         int success = pdc.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 100);
         int destroy = pdc.getOrDefault(Keys.DESTROY, PersistentDataType.INTEGER, 0);
-
         write(meta, def, tier, level, success, destroy);
         book.setItemMeta(meta);
     }
@@ -100,6 +116,7 @@ public class BookFactory {
                          int level, int success, int destroy) {
         // Orden importante: los placeholders largos van antes que sus prefijos
         return raw
+                .replace("{aplicable}", applicableLabel(def))
                 .replace("{id}", def.id())
                 .replace("{enchant}", def.displayName())
                 .replace("{nivel_romano}", roman(level))
@@ -110,5 +127,52 @@ public class BookFactory {
                 .replace("{tier_id}", tier.id())
                 .replace("{tier_glint}", String.valueOf(tier.glint()))
                 .replace("{tier}", tier.display());
+    }
+
+    // ------------------------------------------------------------
+    // {aplicable}: grupos de items donde funciona el encantamiento
+    // ------------------------------------------------------------
+
+    /** "Picos, Hachas" a partir de enchants/<id>.yml -> applicable-to. */
+    private String applicableLabel(EnchantDefinition def) {
+        List<String> parts = new ArrayList<>();
+        for (String group : def.applicableGroups()) {
+            parts.add(groupDisplay(group));
+        }
+        if (parts.isEmpty()) return "Todos";
+        return String.join("<dark_gray>, </dark_gray><white>", parts);
+    }
+
+    /** Nombre visible de un grupo: group-names del yml o default interno. */
+    private String groupDisplay(String group) {
+        String key = group.toUpperCase(Locale.ROOT);
+        String custom = groupNames.get(key);
+        if (custom != null && !custom.isBlank()) return custom;
+        return switch (key) {
+            case "PICKAXE", "PICKAXES" -> "Picos";
+            case "AXE", "AXES" -> "Hachas";
+            case "SHOVEL", "SHOVELS" -> "Palas";
+            case "HOE", "HOES" -> "Azadas";
+            case "SWORD", "SWORDS" -> "Espadas";
+            case "BOW", "BOWS" -> "Arcos";
+            case "CROSSBOW", "CROSSBOWS" -> "Ballestas";
+            case "TRIDENT", "TRIDENTS" -> "Tridentes";
+            case "HELMET", "HELMETS" -> "Cascos";
+            case "CHESTPLATE", "CHESTPLATES" -> "Pecheras";
+            case "LEGGINGS" -> "Pantalones";
+            case "BOOTS" -> "Botas";
+            case "ARMOR" -> "Armadura";
+            case "TOOLS" -> "Herramientas";
+            case "WEAPONS" -> "Armas";
+            case "ELYTRA" -> "Élitros";
+            case "SHIELD", "SHIELDS" -> "Escudos";
+            default -> pretty(key);
+        };
+    }
+
+    /** Fallback: "VEIN_TOOLS" -> "Vein tools". */
+    private String pretty(String raw) {
+        String lower = raw.toLowerCase(Locale.ROOT).replace('_', ' ');
+        return lower.substring(0, 1).toUpperCase(Locale.ROOT) + lower.substring(1);
     }
 }

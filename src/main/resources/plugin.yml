@@ -1,4 +1,4 @@
-name: FabledCustomEnchants
+name: ExodeEnchant
 main: dev.fce.FabledCustomEnchantsPlugin
 version: 1.0.0
 api-version: '1.21'
@@ -7,7 +7,7 @@ softdepend: [Fabled, Vault, PlaceholderAPI]
 commands:
   encantos:
     description: Abre el menu de encantamientos.
-    usage: /encantos [catalogo | categorias | polvos | mercado | top | combos | inspect | check | debug | reload | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]] [ruptura] | dust <polvo> [cantidad]]
+    usage: /encantos [catalogo | categorias | polvos | mercado | top | combos | inspect | check | debug | reload | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]
 permissions:
   fce.admin:
     description: Acceso a los subcomandos administrativos.

@@ -12,6 +12,8 @@
 #    {tier}          → display del tier (MiniMessage)
 #    {tier_id}       → id del tier (comun | raro | legendario)
 #    {tier_color}    → color hex del tier
+#    {aplicable}     → ítems donde puede usarse (applicable-to del
+#                      encanto, con los nombres de group-names)
 # ============================================================
 
 material: ENCHANTED_BOOK
@@ -25,12 +27,38 @@ lore:
   - ""
   - "<dark_gray>│ <gray>Tier <dark_gray>· {tier}"
   - "<dark_gray>│ <gray>Nivel <dark_gray>· <white>{nivel_romano}"
+  - "<dark_gray>│ <gray>Aplicable <dark_gray>· <white>{aplicable}"
   - ""
   - "<dark_gray>│ <green>✔ Éxito <dark_gray>· <white>{exito}%"
   - "<dark_gray>│ <red>✖ Ruptura <dark_gray>· <white>{ruptura}%"
   - ""
   - "<dark_purple>Arrastra este libro sobre un ítem"
   - "<dark_purple>compatible y haz click para aplicar."
+
+# ------------------------------------------------------------
+# Nombres visibles de los grupos de applicable-to ({aplicable}).
+# Las claves deben coincidir con los grupos de
+# modules/drag_and_drop.yml → item-groups.
+# Si un grupo no aparece aquí, se usa un nombre por defecto.
+# ------------------------------------------------------------
+group-names:
+  PICKAXE: "Picos"
+  AXE: "Hachas"
+  SHOVEL: "Palas"
+  HOE: "Azadas"
+  SWORD: "Espadas"
+  BOW: "Arcos"
+  CROSSBOW: "Ballestas"
+  TRIDENT: "Tridentes"
+  HELMET: "Cascos"
+  CHESTPLATE: "Pecheras"
+  LEGGINGS: "Pantalones"
+  BOOTS: "Botas"
+  ARMOR: "Armadura"
+  TOOLS: "Herramientas"
+  WEAPONS: "Armas"
+  ELYTRA: "Élitros"
+  SHIELD: "Escudos"
 
 # ------------------------------------------------------------
 # DATA COMPONENTS (minecraft:custom_data → PersistentDataContainer)

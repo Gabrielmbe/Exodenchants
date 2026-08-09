@@ -1,5 +1,6 @@
 package dev.fce.security;
 
+import dev.fce.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -61,7 +62,7 @@ public final class AntiDupeListener implements Listener {
 
     public AntiDupeListener(Plugin plugin) {
         this.plugin = plugin;
-        this.keyUid = new NamespacedKey(plugin, "fce_uid");
+        this.keyUid = Keys.of("fce_uid");
     }
 
     /** Registra el listener y el barrido periódico (cada 5 segundos). */
@@ -227,14 +228,14 @@ public final class AntiDupeListener implements Listener {
         boolean blocked =
                 // Colocar desde el cursor o swap con hotbar dentro de la GUI de trade
                 (clickedTop && (isFceItem(e.getCursor()) || isFceItem(hotbarItem)))
-                        // Shift-click desde el inventario propio hacia la GUI de trade
-                        || (!clickedTop
+                // Shift-click desde el inventario propio hacia la GUI de trade
+                || (!clickedTop
                         && e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
                         && isFceItem(e.getCurrentItem()))
-                        // Doble clic (COLLECT_TO_CURSOR) recolectando ítems FCE
-                        || (e.getClick() == ClickType.DOUBLE_CLICK && isFceItem(e.getCursor()))
-                        // Sacar un ítem FCE que ya esté dentro de la GUI de trade
-                        || (clickedTop && isFceItem(e.getCurrentItem()));
+                // Doble clic (COLLECT_TO_CURSOR) recolectando ítems FCE
+                || (e.getClick() == ClickType.DOUBLE_CLICK && isFceItem(e.getCursor()))
+                // Sacar un ítem FCE que ya esté dentro de la GUI de trade
+                || (clickedTop && isFceItem(e.getCurrentItem()));
 
         if (blocked) {
             e.setCancelled(true);

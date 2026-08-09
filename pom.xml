@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.fce</groupId>
-    <artifactId>fabled-custom-enchants</artifactId>
+    <artifactId>ExodeEnchant</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>FabledCustomEnchants</name>
+    <name>ExodeEnchant</name>
     <description>Custom Enchants bridge for Fabled 5 (Paper 1.21+ / 26.x)</description>
 
     <properties>
@@ -45,13 +45,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Fabled 5 (Maven Central). 1.0.4-R0.56 es la ultima version
+        <!--  (Maven Central). 1.0.4-R0.56 es la ultima version
              publicada en Central; si tu servidor usa un build mas nuevo
              (ej: 1.0.4-R0.73 de Spigot), instalalo en tu repo local
              (ver README.md, paso 2b) y ajusta esta version. -->
         <dependency>
             <groupId>studio.magemonkey</groupId>
-            <artifactId>fabled</artifactId>
+            <artifactId>Fabled</artifactId>
             <version>1.0.4-R0.56</version>
             <scope>provided</scope>
         </dependency>
@@ -74,12 +74,63 @@
     </dependencies>
 
     <build>
-        <finalName>FabledCustomEnchants-${project.version}</finalName>
+        <finalName>ExodeEnchant-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+            </plugin>
+
+            <!-- ============================================================
+                 ProGuard: ofusca el jar final en la fase package.
+                 El jar de target/ sale ya ofuscado con el mismo nombre.
+                 El mapa de renombres queda en target/proguard-map.txt:
+                 GUARDALO por cada version publicada (sin el, los errores
+                 de consola ofuscados son ilegibles).
+                 ============================================================ -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.7.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <proguardVersion>7.7.0</proguardVersion>
+                    <obfuscate>true</obfuscate>
+
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
+
+                    <!-- Runtime de Java para resolver las clases base -->
+                    <libs>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                    </libs>
+
+                    <options>
+                        <option>-dontoptimize</option>
+                        <option>-dontpreverify</option>
+                        <option>-dontshrink</option>
+                        <option>-ignorewarnings</option>
+
+                        <!-- La clase principal NO puede renombrarse:
+                             plugin.yml la referencia por nombre -->
+                        <option>-keep public class dev.fce.FabledCustomEnchantsPlugin { *; }</option>
+
+                        <!-- Bukkit localiza los eventos por @EventHandler -->
+                        <option>-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod,Record</option>
+                        <option>-keepclassmembers class * { @org.bukkit.event.EventHandler *; }</option>
+
+                        <!-- Enums resueltos por reflexion -->
+                        <option>-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }</option>
+                    </options>
+                </configuration>
             </plugin>
         </plugins>
     </build>
