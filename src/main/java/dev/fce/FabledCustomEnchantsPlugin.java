@@ -64,6 +64,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     private BlackMarketManager market;
     private SetComboManager combos;
     private AdminInspectListener inspector;
+    private dev.fce.security.AntiDupeListener antiDupe;
 
     @Override
     public void onEnable() {
@@ -79,6 +80,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
 
         stats = new PlayerStats(this);
         stats.load();
+        stats.startAutosave();
         announcer = new AnnounceService(this);
         market = new BlackMarketManager(this);
         market.load();
@@ -100,7 +102,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(effects, this);
         getServer().getPluginManager().registerEvents(toolMechanics, this);
         getServer().getPluginManager().registerEvents(combos, this);
-        dev.fce.security.AntiDupeListener.register(this);
+        antiDupe = dev.fce.security.AntiDupeListener.register(this);
         combos.start();
         hookPlaceholders();
 
@@ -178,6 +180,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
                 market.load();
                 combos.load();
                 stats.load();
+                if (antiDupe != null) antiDupe.reload();
                 player.sendMessage("FabledCustomEnchants: configuracion recargada ("
                         + enchants.all().size() + " encantamientos, "
                         + dusts.all().size() + " polvos).");

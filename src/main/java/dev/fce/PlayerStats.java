@@ -24,8 +24,10 @@ import java.util.UUID;
  *     (sistema anti-mala-suerte).
  *   · Puntuacion para el ranking: cada tier vale unos puntos configurables.
  *
- * El archivo se guarda de forma asincrona con un pequeño retardo agrupado,
- * para no escribir a disco en cada click.
+ * El archivo se guarda de forma asincrona con un pequeno retardo agrupado,
+ * para no escribir a disco en cada click. Ademas hay un AUTOSAVE periodico
+ * (cada 5 min por defecto, configurable en stats.autosave-minutes) para que
+ * un crash del servidor no pierda las rachas y rankings desde el arranque.
  */
 public class PlayerStats {
 
@@ -33,6 +35,7 @@ public class PlayerStats {
     private final File file;
     private YamlConfiguration data = new YamlConfiguration();
     private boolean saveScheduled;
+    private boolean dirty;
 
     public PlayerStats(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
@@ -50,8 +53,24 @@ public class PlayerStats {
         }
     }
 
+    /**
+     * Autosave periodico y asincrono. Antes solo se guardaba en onDisable
+     * (mas el retardo agrupado de scheduleSave): si el servidor crasheaba se
+     * perdia todo lo acumulado desde el ultimo guardado. Solo escribe si hay
+     * cambios pendientes.
+     */
+    public void startAutosave() {
+        long minutes = Math.max(1, plugin.getConfig().getLong("stats.autosave-minutes", 5));
+        long ticks = minutes * 60L * 20L;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            if (!dirty) return;
+            saveNow();
+        }, ticks, ticks);
+    }
+
     /** Agrupa las escrituras: varias llamadas seguidas guardan una sola vez. */
     private void scheduleSave() {
+        dirty = true;
         if (saveScheduled || !plugin.isEnabled()) return;
         saveScheduled = true;
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
@@ -64,6 +83,7 @@ public class PlayerStats {
         try {
             if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
             data.save(file);
+            dirty = false;
         } catch (IOException ex) {
             plugin.getLogger().warning("No se pudo guardar stats.yml: " + ex.getMessage());
         }
