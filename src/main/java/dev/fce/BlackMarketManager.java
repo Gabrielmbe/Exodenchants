@@ -206,12 +206,35 @@ public class BlackMarketManager {
         return tier == null ? "" : tier.display();
     }
 
-    /** Compra por indice del catalogo actual. Devuelve true si se entrego. */
+    /**
+     * Compra por indice del catalogo actual. Devuelve true si se entrego.
+     *
+     * TRANSACCION ATOMICA: el articulo se resuelve y se construye ANTES de
+     * cobrar (si la oferta apunta a un encantamiento o polvo que ya no existe
+     * tras un reload, no se toca el dinero). Si la entrega fallara despues
+     * del cobro, se reembolsa el importe completo y se registra en consola.
+     */
     public boolean buy(Player player, int index) {
         List<Offer> current = offers();
         if (index < 0 || index >= current.size()) return false;
         Offer offer = current.get(index);
 
+        // 1) Resolver y construir el articulo ANTES de cobrar
+        ItemStack item;
+        EnchantDefinition def = null;
+        TierRegistry.Tier tier = null;
+        if (offer.isBook()) {
+            def = plugin.enchants().get(offer.id());
+            tier = def == null ? null : plugin.tiers().get(def.tierId());
+            if (def == null || tier == null) return false;
+            item = plugin.books().create(def, tier, offer.level(), offer.success(), offer.destroy());
+        } else {
+            DustRegistry.Dust dust = plugin.dusts().get(offer.id());
+            if (dust == null) return false;
+            item = plugin.dusts().create(dust, 1);
+        }
+
+        // 2) Cobrar
         if (!plugin.vault().withdraw(player, offer.price())) {
             plugin.messages().playSound(player, "purchase-denied");
             plugin.messages().send(player, "no-money",
@@ -219,20 +242,21 @@ public class BlackMarketManager {
             return false;
         }
 
-        if (offer.isBook()) {
-            EnchantDefinition def = plugin.enchants().get(offer.id());
-            TierRegistry.Tier tier = def == null ? null : plugin.tiers().get(def.tierId());
-            if (def == null || tier == null) return false;
-            ItemStack book = plugin.books().create(def, tier,
-                    offer.level(), offer.success(), offer.destroy());
-            give(player, book);
-            plugin.announcer().purchased(player, def, tier, offer.price());
-        } else {
-            DustRegistry.Dust dust = plugin.dusts().get(offer.id());
-            if (dust == null) return false;
-            give(player, plugin.dusts().create(dust, 1));
+        // 3) Entregar; si algo falla, reembolso integro
+        try {
+            give(player, item);
+        } catch (Exception ex) {
+            plugin.vault().deposit(player, offer.price());
+            plugin.getLogger().severe("[Mercado] Entrega fallida tras el cobro ("
+                    + offer.id() + ", " + player.getName() + "): reembolsados "
+                    + String.format(Locale.US, "%,.0f", offer.price()) + ". Causa: " + ex);
+            plugin.messages().playSound(player, "purchase-denied");
+            return false;
         }
 
+        if (def != null) {
+            plugin.announcer().purchased(player, def, tier, offer.price());
+        }
         plugin.messages().playSound(player, "purchase-success");
         plugin.messages().send(player, "market-bought",
                 "articulo", displayName(offer),

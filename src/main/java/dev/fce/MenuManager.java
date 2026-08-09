@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,11 @@ import java.util.regex.Pattern;
  * encantamientos de enchants/ *.yml, ordenados por tier y paginados. La lista
  * puede filtrarse por grupo de items (Categorias) o por material concreto
  * (inspector de admin).
+ *
+ * COMPRAS ATOMICAS: toda accion de compra pasa por un cooldown anti
+ * doble-click, valida el articulo antes de cobrar y, si la entrega fallara
+ * despues del cobro, reembolsa el importe completo. Cobrar sin entregar es
+ * imposible por diseno.
  */
 public class MenuManager implements Listener {
 
@@ -40,8 +46,12 @@ public class MenuManager implements Listener {
             Pattern.compile("tier:\\s*(\\w+).*?price:\\s*(\\d+(?:\\.\\d+)?)");
     private static final Pattern MIN_SCORE_PATTERN = Pattern.compile("min-score:\\s*(\\d+)");
 
+    /** Anti doble-click: intervalo minimo entre compras del mismo jugador. */
+    private static final long PURCHASE_COOLDOWN_MS = 400L;
+
     private final FabledCustomEnchantsPlugin plugin;
     private final Map<String, YamlConfiguration> menus = new HashMap<>();
+    private final Map<UUID, Long> lastPurchase = new HashMap<>();
 
     public MenuManager(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
@@ -367,6 +377,19 @@ public class MenuManager implements Listener {
         return stack;
     }
 
+    /**
+     * Anti doble-click / auto-clicker: true si el jugador compro hace menos
+     * de PURCHASE_COOLDOWN_MS. Si no, registra el intento y deja pasar.
+     * Evita que dos clicks casi simultaneos disparen dos cobros.
+     */
+    private boolean purchaseOnCooldown(Player player) {
+        long now = System.currentTimeMillis();
+        Long last = lastPurchase.get(player.getUniqueId());
+        if (last != null && now - last < PURCHASE_COOLDOWN_MS) return true;
+        lastPurchase.put(player.getUniqueId(), now);
+        return false;
+    }
+
     @EventHandler
     public void onMenuClick(InventoryClickEvent event) {
         if (!(event.getInventory().getHolder() instanceof MenuHolder holder)) return;
@@ -410,21 +433,27 @@ public class MenuManager implements Listener {
             case "page" -> {
                 int delta = value.equalsIgnoreCase("prev") ? -1 : 1;
                 openView(player, holder.menuId, holder.group, holder.material, holder.page + delta);
-                yield true;
+                yield delta != 0;
             }
-            case "buy-book" -> buyBook(player, value);
+            case "buy-book" -> !purchaseOnCooldown(player) && buyBook(player, value);
             case "buy-offer" -> {
+                if (purchaseOnCooldown(player)) yield false;
                 int index = parseIndex(value);
                 boolean bought = index >= 0 && plugin.market().buy(player, index);
                 if (bought) openView(player, holder.menuId, null, null, 0); // refresca el catalogo
                 yield bought;
             }
-            case "buy-dust" -> buyDust(player, value);
+            case "buy-dust" -> !purchaseOnCooldown(player) && buyDust(player, value);
             case "give-book" -> giveBook(player, value);
             default -> true;
         };
     }
 
+    /**
+     * Compra de libro aleatorio del tier. TRANSACCION ATOMICA: requisitos y
+     * pool se validan antes de cobrar; si la entrega fallara despues del
+     * cobro, se reembolsa el importe completo y se registra en consola.
+     */
     private boolean buyBook(Player player, String value) {
         Matcher matcher = BUY_PATTERN.matcher(value);
         if (!matcher.find()) return false;
@@ -461,7 +490,16 @@ public class MenuManager implements Listener {
         }
 
         EnchantDefinition def = pool.get(ThreadLocalRandom.current().nextInt(pool.size()));
-        deliver(player, def, tier);
+        try {
+            deliver(player, def, tier);
+        } catch (Exception ex) {
+            plugin.vault().deposit(player, price);
+            plugin.getLogger().severe("[Tienda] Entrega fallida tras el cobro (libro "
+                    + def.id() + ", " + player.getName() + "): reembolsados "
+                    + money(price) + ". Causa: " + ex);
+            plugin.messages().playSound(player, "purchase-denied");
+            return false;
+        }
         plugin.messages().playSound(player, "purchase-success");
         plugin.announcer().purchased(player, def, tier, price);
         return true;
@@ -469,7 +507,7 @@ public class MenuManager implements Listener {
 
     /**
      * Compra de polvo magico. El precio sale de dusts/&lt;id&gt;.yml, no de la
-     * GUI, para que no puedan divergir.
+     * GUI, para que no puedan divergir. Mismo contrato atomico que buyBook.
      */
     private boolean buyDust(Player player, String dustId) {
         DustRegistry.Dust dust = plugin.dusts().get(dustId);
@@ -480,7 +518,16 @@ public class MenuManager implements Listener {
             return false;
         }
 
-        give(player, plugin.dusts().create(dust, 1));
+        try {
+            give(player, plugin.dusts().create(dust, 1));
+        } catch (Exception ex) {
+            plugin.vault().deposit(player, dust.price());
+            plugin.getLogger().severe("[Tienda] Entrega fallida tras el cobro (polvo "
+                    + dust.id() + ", " + player.getName() + "): reembolsados "
+                    + money(dust.price()) + ". Causa: " + ex);
+            plugin.messages().playSound(player, "purchase-denied");
+            return false;
+        }
         plugin.messages().playSound(player, "purchase-success");
         plugin.messages().send(player, "dust-purchased",
                 "polvo", dust.displayName(),

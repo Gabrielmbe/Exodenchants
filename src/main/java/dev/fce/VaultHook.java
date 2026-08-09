@@ -34,4 +34,14 @@ public class VaultHook {
         if (economy.getBalance(player) < amount) return false;
         return economy.withdrawPlayer(player, amount).transactionSuccess();
     }
+
+    /**
+     * Reembolso. Se usa cuando una compra ya cobrada no puede completarse,
+     * para que la transaccion sea atomica: o se paga Y se entrega, o no
+     * pasa nada. Nunca debe cobrarse sin entregar.
+     */
+    public void deposit(Player player, double amount) {
+        if (!available() || amount <= 0) return;
+        economy.depositPlayer(player, amount);
+    }
 }
