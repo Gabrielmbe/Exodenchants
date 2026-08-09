@@ -17,6 +17,9 @@
         <!-- Paper 1.21 requiere Java 21. Compilar con release 21 tambien
              funciona en servidores 26.x (que corren sobre Java 25). -->
         <maven.compiler.release>21</maven.compiler.release>
+        <!-- ProGuard 7.9.1 soporta class files hasta Java 26; las versiones
+             7.7.x fallan (result=1) al leer java.base.jmod de JDK 25+. -->
+        <proguard.version>7.9.1</proguard.version>
     </properties>
 
     <repositories>
@@ -101,16 +104,28 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- Fija la version real de ProGuard que usa el plugin.
+                     Sin esta dependencia explicita el plugin puede resolver
+                     una version antigua incompatible con JDK 25+. -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>${proguard.version}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <proguardVersion>7.7.0</proguardVersion>
+                    <proguardVersion>${proguard.version}</proguardVersion>
                     <obfuscate>true</obfuscate>
 
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}.jar</outjar>
 
-                    <!-- Runtime de Java para resolver las clases base -->
+                    <!-- Runtime de Java para resolver las clases base.
+                         El filtro excluye module-info.class y jars internos,
+                         que ProGuard no debe procesar. -->
                     <libs>
-                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.base.jmod(!**.jar;!module-info.class)</lib>
                     </libs>
 
                     <options>
@@ -118,6 +133,7 @@
                         <option>-dontpreverify</option>
                         <option>-dontshrink</option>
                         <option>-ignorewarnings</option>
+                        <option>-dontnote **</option>
 
                         <!-- La clase principal NO puede renombrarse:
                              plugin.yml la referencia por nombre -->
