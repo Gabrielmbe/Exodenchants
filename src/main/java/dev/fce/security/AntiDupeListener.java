@@ -26,20 +26,28 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Módulo antidupe de FabledCustomEnchants (v2).
+ * Módulo antidupe de FabledCustomEnchants (v3).
  *
  * Qué hace:
  *  1) Bloquea meter/sacar ítems del plugin (libros fe_id y polvos/esencias
- *     fd_id) en GUIs de comercio: villagers (MERCHANT) y cualquier GUI cuyo
- *     título contenga palabras de trade (configurable en config.yml →
- *     antidupe.trade-keywords). Ahí viven los exploits de desincronización
- *     de inventario.
+ *     fd_id) en GUIs de comercio: villagers (MERCHANT), GUIs cuyo
+ *     InventoryHolder pertenece a un plugin de trade conocido (configurable
+ *     en antidupe.trade-holder-packages) y — como red de apoyo — cualquier
+ *     GUI cuyo título contenga palabras de trade (antidupe.trade-keywords).
+ *     Ahí viven los exploits de desincronización de inventario.
  *  2) Bloquea meter ítems del plugin en estaciones que transforman ítems
  *     (yunque, esmeril, mesa de herrería, telar, mesa de encantar...), que
  *     pueden clonar o corromper los Data Components.
- *  3) Resincroniza el inventario del jugador un tick después de cerrar una
+ *  3) Cubre explícitamente el swap de mano secundaria (tecla F,
+ *     ClickType.SWAP_OFFHAND), que según la versión no pasa por la rama de
+ *     getHotbarButton().
+ *  4) Resincroniza el inventario del jugador un tick después de cerrar una
  *     GUI de comercio, una estación bloqueada o un menú del propio plugin,
  *     para matar ítems fantasma del lado del cliente.
+ *
+ * Prioridad: LOW en los eventos de clic/drag, para que esta capa de
+ * seguridad evalúe SIEMPRE antes que la mecánica de drag &amp; drop
+ * (DragAndDropListener corre en HIGH con ignoreCancelled=true).
  *
  * Qué NO hace (a propósito):
  *  - Ya no sella libros con UID ni borra "clones". Ese sistema eliminaba
@@ -50,13 +58,27 @@ import java.util.Set;
  *    pueden tener tantos libros iguales como quieran.
  *
  * Registro (en FabledCustomEnchantsPlugin.onEnable()):
- *     dev.fce.security.AntiDupeListener.register(this);
+ *     antiDupe = dev.fce.security.AntiDupeListener.register(this);
+ * y tras /fce reload:
+ *     antiDupe.reload();
  */
 public final class AntiDupeListener implements Listener {
 
     /** Títulos de GUI (en minúsculas) que se consideran de comercio por defecto. */
     private static final List<String> DEFAULT_TRADE_KEYWORDS = List.of(
             "trade", "trueque", "intercambio", "comercio"
+    );
+
+    /**
+     * Paquetes (en minúsculas) de InventoryHolders de plugins de comercio
+     * conocidos. Detección robusta e independiente del idioma del título.
+     * Ampliable en config.yml → antidupe.trade-holder-packages.
+     */
+    private static final List<String> DEFAULT_TRADE_HOLDER_PACKAGES = List.of(
+            "de.codingair.tradesystem",   // TradeSystem
+            "com.trophonix.tradeplus",    // TradePlus
+            "me.dniym.trade",             // iTrade / variantes
+            "net.tnemc.tnt"               // TheNewTrade
     );
 
     /** Estaciones que transforman ítems: se bloquea INSERTAR ítems del plugin. */
@@ -72,18 +94,36 @@ public final class AntiDupeListener implements Listener {
 
     private final Plugin plugin;
     private final Set<String> tradeKeywords = new HashSet<>();
+    private final Set<String> tradeHolderPackages = new HashSet<>();
 
     public AntiDupeListener(Plugin plugin) {
         this.plugin = plugin;
+        reload();
+    }
+
+    /**
+     * Relee keywords y paquetes de holders desde config.yml. Debe llamarse
+     * tras /fce reload: antes las keywords solo se leían en el constructor y
+     * los cambios de config no surtían efecto hasta reiniciar.
+     */
+    public void reload() {
+        tradeKeywords.clear();
         List<String> configured = plugin.getConfig().getStringList("antidupe.trade-keywords");
         for (String kw : configured.isEmpty() ? DEFAULT_TRADE_KEYWORDS : configured) {
             tradeKeywords.add(kw.toLowerCase(Locale.ROOT));
         }
+        tradeHolderPackages.clear();
+        List<String> holders = plugin.getConfig().getStringList("antidupe.trade-holder-packages");
+        for (String pkg : holders.isEmpty() ? DEFAULT_TRADE_HOLDER_PACKAGES : holders) {
+            tradeHolderPackages.add(pkg.toLowerCase(Locale.ROOT));
+        }
     }
 
-    /** Registra el listener. Ya no hay barrido periódico: no borra ítems. */
-    public static void register(Plugin plugin) {
-        Bukkit.getPluginManager().registerEvents(new AntiDupeListener(plugin), plugin);
+    /** Registra el listener y devuelve la instancia (para poder recargarla). */
+    public static AntiDupeListener register(Plugin plugin) {
+        AntiDupeListener listener = new AntiDupeListener(plugin);
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+        return listener;
     }
 
     /* ==================== Identificación de ítems ==================== */
@@ -106,6 +146,18 @@ public final class AntiDupeListener implements Listener {
 
     private boolean isTradeGui(InventoryView view) {
         if (view.getTopInventory().getType() == InventoryType.MERCHANT) return true;
+
+        // Detección robusta: el holder de la GUI pertenece a un plugin de
+        // comercio conocido (independiente del idioma/estilo del título).
+        InventoryHolder holder = view.getTopInventory().getHolder();
+        if (holder != null) {
+            String cls = holder.getClass().getName().toLowerCase(Locale.ROOT);
+            for (String pkg : tradeHolderPackages) {
+                if (cls.startsWith(pkg)) return true;
+            }
+        }
+
+        // Red de apoyo: keywords en el título (frágil pero mejor que nada).
         String title = ChatColor.stripColor(view.getTitle()).toLowerCase(Locale.ROOT);
         for (String kw : tradeKeywords) {
             if (title.contains(kw)) return true;
@@ -130,7 +182,7 @@ public final class AntiDupeListener implements Listener {
 
     /* ==================== Eventos ==================== */
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player player)) return;
 
@@ -146,9 +198,18 @@ public final class AntiDupeListener implements Listener {
                 ? player.getInventory().getItem(e.getHotbarButton())
                 : null;
 
+        // Swap de mano secundaria (tecla F): según la versión no pasa por
+        // getHotbarButton(), así que se comprueba la offhand explícitamente.
+        ItemStack offhandItem = e.getClick() == ClickType.SWAP_OFFHAND
+                ? player.getInventory().getItemInOffHand()
+                : null;
+
         boolean blocked =
-                // Colocar desde el cursor o swap con hotbar dentro de la GUI
-                (clickedTop && (isFceItem(e.getCursor()) || isFceItem(hotbarItem)))
+                // Colocar desde el cursor, swap con hotbar o swap con offhand
+                // dentro de la GUI
+                (clickedTop && (isFceItem(e.getCursor())
+                        || isFceItem(hotbarItem)
+                        || isFceItem(offhandItem)))
                 // Shift-click desde el inventario propio hacia la GUI
                 || (!clickedTop
                         && e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
@@ -169,7 +230,7 @@ public final class AntiDupeListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onDrag(InventoryDragEvent e) {
         if (!(e.getWhoClicked() instanceof Player player)) return;
         if (!isTradeGui(e.getView()) && !isBlockedStation(e.getView())) return;

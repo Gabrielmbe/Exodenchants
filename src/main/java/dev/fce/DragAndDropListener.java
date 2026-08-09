@@ -40,6 +40,19 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * En ambos casos los datos se leen y escriben SOLO en Data Components.
  *
+ * SEGURIDAD:
+ *  - Solo se opera sobre ITEMS DEL INVENTARIO DEL PROPIO JUGADOR. Los clics
+ *    sobre la GUI superior (catalogo, mercado negro, menus de otros plugins,
+ *    cofres ajenos...) se ignoran por completo: sin este filtro un libro
+ *    podia encantar un item de exhibicion o incluso borrarlo si saltaba la
+ *    tirada de ruptura, consumiendo ademas el libro.
+ *  - Corre en prioridad HIGH con ignoreCancelled=true: la capa antidupe
+ *    (dev.fce.security.AntiDupeListener, prioridad LOW) evalua SIEMPRE antes
+ *    y puede cancelar el clic.
+ *  - Un libro sin % de exito almacenado se considera corrupto (NBT editado o
+ *    resto de una version vieja) y se rechaza sin consumirlo. Nunca se asume
+ *    100% de exito por defecto.
+ *
  * COSMETICA INTEGRADA (rebuildCosmetics):
  *  - Sin cabecera "=== ENCANTAMIENTOS ===": las lineas van integradas al
  *    lore con barra lateral, ordenadas de MAYOR a MENOR tier.
@@ -71,6 +84,15 @@ public class DragAndDropListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getClick() != ClickType.LEFT && event.getClick() != ClickType.RIGHT) return;
 
+        // SEGURIDAD: solo items del inventario del PROPIO jugador. Un clic
+        // sobre la GUI superior (menus del plugin, GUIs de otros plugins,
+        // cofres...) se ignora: jamas se encanta ni se rompe un item que no
+        // este en el inventario personal.
+        if (event.getClickedInventory() == null
+                || event.getClickedInventory() != event.getView().getBottomInventory()) {
+            return;
+        }
+
         ItemStack cursor = event.getCursor();
         if (cursor == null || cursor.getType().isAir() || !cursor.hasItemMeta()) return;
         PersistentDataContainer cursorData = cursor.getItemMeta().getPersistentDataContainer();
@@ -96,7 +118,19 @@ public class DragAndDropListener implements Listener {
         if (def == null) return;
 
         int level = cursorData.getOrDefault(Keys.ENCHANT_LEVEL, PersistentDataType.INTEGER, 1);
-        int success = cursorData.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 100);
+
+        // Un libro sin % de exito es un item manipulado (NBT editors) o de una
+        // version vieja: se rechaza como corrupto SIN consumirlo. Asumir 100
+        // por defecto convertia cualquier libro falsificado en aplicacion
+        // garantizada.
+        Integer successStored = cursorData.get(Keys.SUCCESS, PersistentDataType.INTEGER);
+        if (successStored == null) {
+            plugin.messages().playSound(player, "purchase-denied");
+            plugin.messages().sendRaw(player,
+                    "<red>Este libro está corrupto y no puede aplicarse.");
+            return;
+        }
+        int success = Math.max(0, Math.min(100, successStored));
         int destroy = cursorData.getOrDefault(Keys.DESTROY, PersistentDataType.INTEGER, 0);
 
         // 1) Compatibilidad del item destino (grupos de drag_and_drop.yml)
@@ -217,7 +251,9 @@ public class DragAndDropListener implements Listener {
     /** mode: success -> suma puntos al % de exito, con techo configurable. */
     private boolean boostSuccess(Player player, PersistentDataContainer bookData, DustRegistry.Dust dust) {
         int max = Math.min(100, plugin.getConfig().getInt("limits.max-success-rate", 100));
-        int success = bookData.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 100);
+        // Default conservador: un libro sin % de exito almacenado se trata
+        // como 0 (el polvo puede "reparar" libros de versiones viejas).
+        int success = bookData.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 0);
         if (success >= max) {
             plugin.messages().playSound(player, "purchase-denied");
             plugin.messages().send(player, "dust-max-reached", "maximo", String.valueOf(max));
