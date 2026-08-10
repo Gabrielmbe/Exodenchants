@@ -20,6 +20,10 @@
         <!-- ProGuard 7.9.1 soporta class files hasta Java 26; las versiones
              7.7.x fallan (result=1) al leer java.base.jmod de JDK 25+. -->
         <proguard.version>7.9.1</proguard.version>
+        <!-- VIA DE ESCAPE: si ProGuard vuelve a fallar en algun entorno,
+             compila sin ofuscar con:  mvn clean package -Dproguard.skip=true
+             El jar resultante es identico en funcionalidad. -->
+        <proguard.skip>false</proguard.skip>
     </properties>
 
     <repositories>
@@ -91,6 +95,12 @@
                  El mapa de renombres queda en target/proguard-map.txt:
                  GUARDALO por cada version publicada (sin el, los errores
                  de consola ofuscados son ilegibles).
+
+                 MODO TOLERANTE: -ignorewarnings + -dontwarn ** hacen que
+                 NINGUNA advertencia (clases de Paper/Fabled/PAPI/Vault no
+                 presentes como library jars, referencias opcionales, etc.)
+                 aborte el build. Si aun asi fallara en tu maquina, usa
+                 mvn clean package -Dproguard.skip=true para saltarlo.
                  ============================================================ -->
             <plugin>
                 <groupId>com.github.wvengen</groupId>
@@ -116,6 +126,7 @@
                 </dependencies>
                 <configuration>
                     <proguardVersion>${proguard.version}</proguardVersion>
+                    <skip>${proguard.skip}</skip>
                     <obfuscate>true</obfuscate>
 
                     <injar>${project.build.finalName}.jar</injar>
@@ -123,17 +134,34 @@
 
                     <!-- Runtime de Java para resolver las clases base.
                          El filtro excluye module-info.class y jars internos,
-                         que ProGuard no debe procesar. -->
+                         que ProGuard no debe procesar.
+                         java.logging es necesario porque JavaPlugin#getLogger
+                         usa java.util.logging.Logger (modulo java.logging,
+                         NO java.base): sin el, ProGuard emite errores de
+                         clase no encontrada. -->
                     <libs>
                         <lib>${java.home}/jmods/java.base.jmod(!**.jar;!module-info.class)</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod(!**.jar;!module-info.class)</lib>
                     </libs>
 
                     <options>
                         <option>-dontoptimize</option>
                         <option>-dontpreverify</option>
                         <option>-dontshrink</option>
+
+                        <!-- MODO TOLERANTE: ninguna advertencia aborta el build.
+                             Las clases de Paper, Fabled, PlaceholderAPI y Vault
+                             son 'provided': ProGuard no las ve y sin estas dos
+                             opciones cada referencia externa es un warning que
+                             termina en 'Please correct the above warnings first'
+                             y result=1. -->
                         <option>-ignorewarnings</option>
+                        <option>-dontwarn **</option>
                         <option>-dontnote **</option>
+
+                        <!-- Evita colisiones a.class/A.class en filesystems
+                             sin distincion de mayusculas (Windows/macOS). -->
+                        <option>-dontusemixedcaseclassnames</option>
 
                         <!-- La clase principal NO puede renombrarse:
                              plugin.yml la referencia por nombre -->

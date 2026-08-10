@@ -36,6 +36,25 @@ lore:
   - "<dark_purple>compatible y haz click para aplicar."
 
 # ------------------------------------------------------------
+# RACHA DE SUERTE VISIBLE
+# Bloque añadido al final del lore cuando el jugador que sostiene
+# el libro con el cursor lleva fallos acumulados en el tier del
+# libro (sistema de pity de config.yml → luck). Se actualiza al
+# tomar el libro y desaparece solo cuando la racha se reinicia.
+#
+# Placeholders adicionales (solo válidos en esta sección):
+#   {racha}            → fallos consecutivos en este tier
+#   {bono}             → bono de suerte actual (+%)
+#   {exito_efectivo}   → éxito real: {exito} + {bono}, tope 100
+#   {siguiente_bono}   → bono si el próximo intento también falla
+# ------------------------------------------------------------
+luck-lore:
+  - ""
+  - "<dark_gray>│ <gold>☘ Racha <dark_gray>· <white>{racha} <gray>fallos seguidos"
+  - "<dark_gray>│ <gold>☘ Bono de suerte <dark_gray>· <green>+{bono}%</green> <dark_gray>(<gray>éxito real <white>{exito_efectivo}%</white><dark_gray>)"
+  - "<dark_gray>│ <yellow>Un fallo más <dark_gray>→ <gold>+{siguiente_bono}%"
+
+# ------------------------------------------------------------
 # Nombres visibles de los grupos de applicable-to ({aplicable}).
 # Las claves deben coincidir con los grupos de
 # modules/drag_and_drop.yml → item-groups.

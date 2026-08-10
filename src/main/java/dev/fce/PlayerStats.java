@@ -127,6 +127,19 @@ public class PlayerStats {
         return Math.max(0, Math.min(max, streak(player.getUniqueId(), tierId) * perFail));
     }
 
+    /**
+     * RACHA DE SUERTE VISIBLE: bono que tendria el jugador si su PROXIMO
+     * intento de este tier tambien fallara. Alimenta la linea de tension
+     * del lore ("un fallo mas -> +X%"): nextLuckBonus == luckBonus significa
+     * que ya esta en el techo (luck.max-bonus).
+     */
+    public int nextLuckBonus(Player player, String tierId) {
+        if (!plugin.getConfig().getBoolean("luck.enabled", true)) return 0;
+        int perFail = plugin.getConfig().getInt("luck.per-fail", 3);
+        int max = plugin.getConfig().getInt("luck.max-bonus", 25);
+        return Math.max(0, Math.min(max, (streak(player.getUniqueId(), tierId) + 1) * perFail));
+    }
+
     public int streak(UUID uuid, String tierId) {
         return data.getInt(uuid + ".streak." + tierId, 0);
     }

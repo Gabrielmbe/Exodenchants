@@ -95,6 +95,9 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         inspector = new AdminInspectListener(this);
 
         getServer().getPluginManager().registerEvents(new DragAndDropListener(this), this);
+        // Racha de suerte visible: pinta el bono de pity en el lore del libro
+        // que el jugador sostiene con el cursor, antes de aplicarlo.
+        getServer().getPluginManager().registerEvents(new LuckLoreListener(this), this);
         getServer().getPluginManager().registerEvents(menus, this);
         getServer().getPluginManager().registerEvents(bridge, this);
         getServer().getPluginManager().registerEvents(inspector, this);

@@ -29,6 +29,11 @@ import java.util.Map;
  * donde puede usarse el encantamiento (enchants/<id>.yml -> applicable-to).
  * Los nombres visibles se personalizan en libro_encantamiento.yml ->
  * group-names; si un grupo no esta ahi, se usa un nombre por defecto.
+ *
+ * RACHA DE SUERTE VISIBLE (refreshWithLuck): bloque opcional luck-lore de
+ * la plantilla que muestra al portador su racha de fallos del tier, el bono
+ * de pity actual y el que tendria tras un fallo mas. Placeholders extra:
+ * {racha} {bono} {exito_efectivo} {siguiente_bono}.
  */
 public class BookFactory {
 
@@ -37,6 +42,7 @@ public class BookFactory {
 
     private String displayName = "{enchant} {nivel_romano}";
     private List<String> loreTemplate = new ArrayList<>();
+    private List<String> luckLoreTemplate = new ArrayList<>();
     private final Map<String, String> groupNames = new LinkedHashMap<>();
 
     public void load(JavaPlugin plugin) {
@@ -44,6 +50,7 @@ public class BookFactory {
                 new File(plugin.getDataFolder(), "books/libro_encantamiento.yml"));
         displayName = yml.getString("display-name", displayName);
         loreTemplate = yml.getStringList("lore");
+        luckLoreTemplate = yml.getStringList("luck-lore");
 
         groupNames.clear();
         ConfigurationSection names = yml.getConfigurationSection("group-names");
@@ -94,6 +101,48 @@ public class BookFactory {
         int success = pdc.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 100);
         int destroy = pdc.getOrDefault(Keys.DESTROY, PersistentDataType.INTEGER, 0);
         write(meta, def, tier, level, success, destroy);
+        book.setItemMeta(meta);
+    }
+
+    /**
+     * RACHA DE SUERTE VISIBLE.
+     * Igual que refresh(), pero ademas anexa el bloque luck-lore de la
+     * plantilla cuando el portador acumula racha o bono en el tier del libro.
+     *
+     * Como write() reconstruye el lore completo desde la plantilla base,
+     * cualquier bloque de racha anterior (de otro jugador o de una racha ya
+     * reiniciada) desaparece solo: el lore nunca queda desactualizado en
+     * negativo, y los datos reales del libro (PDC) no se tocan jamas.
+     *
+     * @param streak    fallos consecutivos del portador en este tier
+     * @param bonus     bono de pity actual (ya con techo aplicado)
+     * @param nextBonus bono que tendria tras UN fallo mas (la tension)
+     */
+    public void refreshWithLuck(ItemStack book, EnchantDefinition def, TierRegistry.Tier tier,
+                                int streak, int bonus, int nextBonus) {
+        if (book == null || !book.hasItemMeta()) return;
+        ItemMeta meta = book.getItemMeta();
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        int level = pdc.getOrDefault(Keys.ENCHANT_LEVEL, PersistentDataType.INTEGER, 1);
+        int success = pdc.getOrDefault(Keys.SUCCESS, PersistentDataType.INTEGER, 100);
+        int destroy = pdc.getOrDefault(Keys.DESTROY, PersistentDataType.INTEGER, 0);
+
+        write(meta, def, tier, level, success, destroy);
+
+        if ((streak > 0 || bonus > 0) && !luckLoreTemplate.isEmpty()) {
+            int effective = Math.min(100, success + bonus);
+            List<Component> base = meta.lore();
+            List<Component> extended = base == null ? new ArrayList<>() : new ArrayList<>(base);
+            for (String raw : luckLoreTemplate) {
+                String resolved = apply(raw, def, tier, level, success, destroy)
+                        .replace("{racha}", String.valueOf(streak))
+                        .replace("{bono}", String.valueOf(bonus))
+                        .replace("{exito_efectivo}", String.valueOf(effective))
+                        .replace("{siguiente_bono}", String.valueOf(nextBonus));
+                extended.add(line(resolved));
+            }
+            meta.lore(extended);
+        }
         book.setItemMeta(meta);
     }
 
