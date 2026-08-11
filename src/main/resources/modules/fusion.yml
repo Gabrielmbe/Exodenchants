@@ -1,0 +1,60 @@
+# ============================================================
+#  FORJA DE FUSIÓN  ·  modules/fusion.yml
+# ============================================================
+# Fusiona dos libros IDÉNTICOS (mismo encantamiento y mismo nivel)
+# arrastrando uno sobre el otro en el inventario del jugador.
+#
+#  · Éxito  -> libro de nivel +1, hereda el MEJOR % de éxito de los dos
+#              (+ success-bonus) y la MENOR ruptura.
+#  · Fallo  -> solo se pierde el libro del cursor (el sacrificado);
+#              el otro sobrevive. Cada fallo acumula "destino de forja"
+#              (pity) que suma probabilidad al siguiente intento del
+#              mismo tier, y opcionalmente devuelve polvo como consuelo.
+#  · Ambos libros al nivel MÁXIMO -> Fusión Perfecta: sin tirada,
+#              +perfect.success-bonus de éxito garantizado.
+#
+# Comando informativo para jugadores: /fce fusion
+# Recargable con /fce reload.
+
+fusion:
+  enabled: true
+
+  # Probabilidad base de éxito de la fusión por tier (1-100).
+  # Las claves deben coincidir con los ids de pools/tiers.yml.
+  # Si un tier no aparece aquí se usa default-chance.
+  chance-by-tier:
+    comun: 90
+    raro: 80
+    legendario: 65
+    mitico: 50
+    divino: 35
+  default-chance: 75
+
+  # Destino de forja: puntos de probabilidad que suma CADA fallo
+  # consecutivo del mismo tier al siguiente intento. Se reinicia al lograr
+  # una fusión. (6 -> tras 5 fallos seguidos, +30%.)
+  pity-per-fail: 6
+
+  # El libro resultante hereda el mejor % de éxito de los dos, más este bono.
+  # El techo global sigue siendo limits.max-success-rate del config.yml.
+  success-bonus: 5
+
+  # Fusión Perfecta: dos libros al nivel máximo se funden sin riesgo
+  # y el resultado gana este bono de éxito.
+  perfect:
+    enabled: true
+    success-bonus: 10
+
+  # Consuelo al fallar: id de un polvo de dusts/ (vacío = desactivado).
+  failure:
+    compensation-dust: polvo_menor
+    compensation-amount: 1
+
+  # Anuncio global al fusionar con éxito libros de estos tiers.
+  # Placeholders: {player} {enchant} {nivel} {exito}
+  broadcast:
+    enabled: true
+    tiers:
+      - mitico
+      - divino
+    message: "<gradient:#FFB703:#FB8500>⚒ {player} ha forjado</gradient> <white>{enchant} {nivel}</white> <gradient:#FB8500:#FFB703>en la Forja de Fusión!</gradient>"

@@ -64,6 +64,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     private BlackMarketManager market;
     private SetComboManager combos;
     private AdminInspectListener inspector;
+    private FusionListener fusion;
     private dev.fce.security.AntiDupeListener antiDupe;
 
     @Override
@@ -93,11 +94,16 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         effects = new EffectEngine(this);
         toolMechanics = new ToolMechanicsListener(this);
         inspector = new AdminInspectListener(this);
+        fusion = new FusionListener(this);
+        fusion.load();
 
         getServer().getPluginManager().registerEvents(new DragAndDropListener(this), this);
         // Racha de suerte visible: pinta el bono de pity en el lore del libro
         // que el jugador sostiene con el cursor, antes de aplicarlo.
         getServer().getPluginManager().registerEvents(new LuckLoreListener(this), this);
+        // Forja de Fusion: libro sobre libro identico -> nivel superior.
+        // Corre en prioridad NORMAL (tras el antidupe, antes del drag & drop).
+        getServer().getPluginManager().registerEvents(fusion, this);
         getServer().getPluginManager().registerEvents(menus, this);
         getServer().getPluginManager().registerEvents(bridge, this);
         getServer().getPluginManager().registerEvents(inspector, this);
@@ -141,6 +147,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         saveIfAbsent("modules/drag_and_drop.yml");
         saveIfAbsent("modules/set_combos.yml");
         saveIfAbsent("modules/black_market.yml");
+        saveIfAbsent("modules/fusion.yml");
         saveIfAbsent("pools/tiers.yml");
         saveIfAbsent("books/libro_encantamiento.yml");
         for (String id : ENCHANT_FILES) saveIfAbsent("enchants/" + id + ".yml");
@@ -182,6 +189,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
                 menus.load();
                 market.load();
                 combos.load();
+                fusion.load();
                 stats.load();
                 if (antiDupe != null) antiDupe.reload();
                 player.sendMessage("FabledCustomEnchants: configuracion recargada ("
@@ -212,6 +220,11 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
             case "combos" -> {
                 messages.sendRaw(player, "<dark_gray>— <gradient:#F72585:#B5179E>Combos de set</gradient> <dark_gray>—");
                 for (String line : combos.describe(player)) messages.sendRaw(player, line);
+                return true;
+            }
+            case "fusion", "forja" -> {
+                messages.sendRaw(player, "<dark_gray>— <gradient:#FFB703:#FB8500>Forja de Fusión</gradient> <dark_gray>—");
+                for (String line : fusion.describe(player)) messages.sendRaw(player, line);
                 return true;
             }
             case "inspect" -> {
@@ -304,7 +317,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
             }
             default -> {
                 player.sendMessage("Uso: /" + label
-                        + " [catalogo | categorias | polvos | mercado | top | combos"
+                        + " [catalogo | categorias | polvos | mercado | top | combos | fusion"
                         + " | inspect | check | debug | reload"
                         + " | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]");
                 return true;
@@ -335,4 +348,5 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     public BlackMarketManager market()      { return market; }
     public SetComboManager combos()         { return combos; }
     public ToolMechanicsListener tools()    { return toolMechanics; }
+    public FusionListener fusion()          { return fusion; }
 }
