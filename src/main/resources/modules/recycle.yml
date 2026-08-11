@@ -1,0 +1,63 @@
+# ============================================================
+#  TRITURADORA  ·  modules/recycle.yml
+# ============================================================
+# Recicla libros de encantamiento en polvos y esencias: arrastra un libro
+# sobre la ESTACION (por defecto una piedra de afilar como item) en tu
+# inventario y el libro se tritura.
+#
+#  · El rendimiento depende del TIER del libro (by-tier).
+#  · Con multiply-by-level, un libro de nivel III rinde x3.
+#  · bonus-dust / bonus-chance: probabilidad de encontrar ADEMAS una
+#    esencia entre los restos (el "golpe de suerte").
+#  · Los libros corruptos o de versiones viejas tambien se pueden triturar
+#    (usan el rendimiento de 'default').
+#
+# Cierra el ciclo: libro malo -> polvo -> mejorar libro bueno -> fusionar.
+#
+# Comando informativo para jugadores: /fce reciclar
+# Recargable con /fce reload.
+
+recycle:
+  enabled: true
+
+  # Material que actua como estacion de triturado (item en el inventario).
+  station: GRINDSTONE
+
+  # Multiplicar el rendimiento por el nivel del libro.
+  multiply-by-level: true
+
+  # Rendimiento por tier. Las claves deben coincidir con los ids de
+  # pools/tiers.yml; los ids de polvo, con los archivos de dusts/.
+  by-tier:
+    comun:
+      dust: polvo_menor
+      amount: 1
+      bonus-dust: esencia_menor
+      bonus-chance: 10
+    raro:
+      dust: polvo_arcano
+      amount: 1
+      bonus-dust: esencia_menor
+      bonus-chance: 15
+    legendario:
+      dust: polvo_celestial
+      amount: 1
+      bonus-dust: esencia_mayor
+      bonus-chance: 15
+    mitico:
+      dust: polvo_estelar
+      amount: 1
+      bonus-dust: esencia_mayor
+      bonus-chance: 20
+    divino:
+      dust: polvo_primordial
+      amount: 1
+      bonus-dust: esencia_divina
+      bonus-chance: 20
+
+  # Rendimiento para tiers no listados o libros irreconocibles.
+  default:
+    dust: polvo_menor
+    amount: 1
+    bonus-dust: ""
+    bonus-chance: 0
