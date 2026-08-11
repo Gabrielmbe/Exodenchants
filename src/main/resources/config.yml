@@ -93,6 +93,16 @@ announce:
 # ------------------------------------------------------------
 cosmetics:
   glint: true
+  # HOLOGRAMA DE FUSIÓN (Drag & Drop con suspenso activo):
+  # al soltar un libro sobre un ítem compatible, el ítem y el libro
+  # aparecen flotando frente al jugador, giran sobre sí mismos y se
+  # van acercando hasta fundirse en un destello justo antes del
+  # veredicto. El éxito remata con fuegos artificiales; el fallo,
+  # con humo. Es pura estética: el ítem real nunca sale del inventario.
+  fusion-hologram:
+    enabled: true
+    scale: 0.7        # tamaño de los hologramas
+    distance: 1.8     # distancia frente al jugador (bloques)
   # Marco de la sección de encantamientos en el Lore del ítem.
   # La sección se reconstruye entera en cada aplicación: cabecera,
   # una línea por encanto con el símbolo de su tier (ordenadas de
