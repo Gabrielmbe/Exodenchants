@@ -31,7 +31,9 @@ import java.util.concurrent.ThreadLocalRandom;
  *  - El libro se consume y devuelve polvo segun su tier (modules/recycle.yml).
  *  - El rendimiento escala con el NIVEL del libro (multiply-by-level).
  *  - GOLPE DE SUERTE: probabilidad configurable de obtener ademas una esencia
- *    (bonus-dust) — el momento jackpot que hace divertido triturar.
+ *    (bonus-dust) — el momento jackpot que hace divertido triturar. Se ANUNCIA
+ *    a todo el servidor (announce.on-jackpot): lo que suena en el chat, la
+ *    gente lo persigue.
  *
  * Cierra el loop economico del plugin:
  *    libro malo -> triturar -> polvo -> mejorar libro bueno -> fusionar.
@@ -163,11 +165,14 @@ public final class RecycleListener implements Listener {
             if (bonus != null) {
                 giveOrDrop(player, plugin.dusts().create(bonus, 1));
                 plugin.messages().playSound(player, "apply-success");
+                player.playSound(player.getLocation(), "entity.player.levelup", 1.0f, 1.4f);
                 player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER,
                         player.getLocation().add(0, 1, 0), 25, 0.4, 0.6, 0.4, 0.1);
                 plugin.messages().sendRaw(player,
                         "<gold>✨ ¡Golpe de suerte!</gold> <gray>Entre los restos encuentras <white>"
                                 + bonus.displayName() + "</white>.");
+                // Los momentos raros son ruidosos: el servidor entero se entera.
+                plugin.announcer().jackpot(player, bonus.displayName());
             }
         }
     }

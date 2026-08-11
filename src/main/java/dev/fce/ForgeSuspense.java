@@ -1,5 +1,6 @@
 package dev.fce;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -32,7 +34,12 @@ import java.util.UUID;
  *    su item de la ruptura escondiendolo a mitad del redoble.
  *  - Si el jugador se desconecta, la resolucion se ejecuta INMEDIATAMENTE
  *    (antes de que se guarde su inventario): nada se pierde ni se duplica.
- *  - En onDisable() el plugin llama resolveAll() por el mismo motivo.
+ *  - Al deshabilitarse el plugin (reinicio, /reload) tambien se resuelve todo
+ *    lo pendiente antes de que se cancelen las tareas del scheduler.
+ *
+ * Uso: ForgeSuspense.get(plugin).begin(player, resolution). La instancia se
+ * crea y registra sola la primera vez, asi que no hace falta tocar el
+ * onEnable del plugin.
  *
  * Config (config.yml, todo opcional):
  *   suspense.enabled: true      # apagar para volver al resultado instantaneo
@@ -50,11 +57,22 @@ public final class ForgeSuspense implements Listener {
         Runnable resolution;
     }
 
+    private static ForgeSuspense instance;
+
     private final FabledCustomEnchantsPlugin plugin;
     private final Map<UUID, Pending> pending = new HashMap<>();
 
-    public ForgeSuspense(FabledCustomEnchantsPlugin plugin) {
+    private ForgeSuspense(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    /** Instancia compartida; se registra como listener la primera vez. */
+    public static ForgeSuspense get(FabledCustomEnchantsPlugin plugin) {
+        if (instance == null || instance.plugin != plugin) {
+            instance = new ForgeSuspense(plugin);
+            Bukkit.getPluginManager().registerEvents(instance, plugin);
+        }
+        return instance;
     }
 
     public boolean enabled() {
@@ -69,7 +87,7 @@ public final class ForgeSuspense implements Listener {
     /**
      * Inicia el redoble y ejecuta {@code resolution} al terminar.
      * La resolucion corre SIEMPRE exactamente una vez (al final del redoble,
-     * al desconectarse el jugador o en resolveAll()).
+     * al desconectarse el jugador o al deshabilitarse el plugin).
      */
     public void begin(Player player, Runnable resolution) {
         UUID id = player.getUniqueId();
@@ -112,7 +130,7 @@ public final class ForgeSuspense implements Listener {
         p.resolution.run();
     }
 
-    /** Resuelve al instante todo lo pendiente (llamar en onDisable). */
+    /** Resuelve al instante todo lo pendiente. */
     public void resolveAll() {
         for (UUID id : new ArrayList<>(pending.keySet())) finish(id);
     }
@@ -143,5 +161,13 @@ public final class ForgeSuspense implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
         finish(e.getPlayer().getUniqueId());
+    }
+
+    /** Apagado del plugin: nada queda a medias. */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPluginDisable(PluginDisableEvent e) {
+        if (e.getPlugin() != plugin) return;
+        resolveAll();
+        instance = null;
     }
 }
