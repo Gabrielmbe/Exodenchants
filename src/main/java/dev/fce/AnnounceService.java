@@ -1,5 +1,6 @@
 package dev.fce;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,6 +17,13 @@ import org.bukkit.entity.Player;
  *
  * Cualquiera de las tres condiciones basta: un Divino siempre suena, y un
  * Legendario clavado al 15% tambien.
+ *
+ * REGLA DE ORO de los servidores: lo que se anuncia en el chat, la gente lo
+ * persigue. Por eso los momentos raros son ruidosos: aplicaciones dificiles,
+ * rupturas de items valiosos, supervivencias por un pelo y golpes de suerte
+ * en la trituradora. Los mensajes admiten override en config.yml ->
+ * messages.announce-survived / messages.announce-jackpot (con defaults
+ * integrados: funcionan aunque el config sea de una version vieja).
  */
 public class AnnounceService {
 
@@ -75,5 +83,41 @@ public class AnnounceService {
                 "jugador", player.getName(),
                 "enchant", def.displayName(),
                 "tier", tier.display());
+    }
+
+    /** Item de alto tier que sobrevive a la ruptura por 1-3 puntos. */
+    public void survived(Player player, EnchantDefinition def, TierRegistry.Tier tier) {
+        if (!enabled()) return;
+        if (!plugin.getConfig().getBoolean("announce.on-survived", true)) return;
+        if (!worthy(tier, 0)) return;
+        broadcastRaw("announce-survived",
+                "<gradient:#FFD60A:#FFC300>⚡ ¡{jugador} salvó su objeto por un pelo!</gradient> "
+                        + "<gray>{enchant} estuvo a punto de destruirlo...</gray>",
+                "jugador", player.getName(),
+                "enchant", def.displayName(),
+                "tier", tier.display());
+        plugin.messages().broadcastSound("announce");
+    }
+
+    /** Golpe de suerte en la trituradora: esencia extra entre los restos. */
+    public void jackpot(Player player, String dustName) {
+        if (!enabled()) return;
+        if (!plugin.getConfig().getBoolean("announce.on-jackpot", true)) return;
+        broadcastRaw("announce-jackpot",
+                "<gradient:#8ECAE6:#219EBC>✨ ¡{jugador} tuvo un golpe de suerte en la trituradora!</gradient> "
+                        + "<gray>Encontró <white>{polvo}</white> entre los restos.</gray>",
+                "jugador", player.getName(),
+                "polvo", dustName);
+    }
+
+    /**
+     * Broadcast con default integrado: usa messages.<key> del config si existe
+     * y, si no, el mensaje por defecto — asi los servidores con config.yml
+     * antiguo tambien ven los anuncios nuevos sin tocar nada.
+     */
+    private void broadcastRaw(String key, String fallback, String... kv) {
+        String raw = plugin.getConfig().getString("messages." + key, fallback);
+        if (raw == null || raw.isBlank()) return;
+        Bukkit.getServer().sendMessage(plugin.messages().render(raw, kv));
     }
 }
