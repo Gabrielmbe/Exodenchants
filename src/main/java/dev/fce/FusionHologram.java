@@ -206,7 +206,10 @@ public final class FusionHologram implements Listener {
         return loc.getWorld().spawn(loc, ItemDisplay.class, d -> {
             d.setItemStack(stack);
             d.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
-            d.setBillboard(Display.Billboard.NONE);
+            // Billboard.FIXED = orientacion fija (no sigue la camara).
+            // OJO: el enum Billboard NO tiene NONE; sus valores son
+            // FIXED, VERTICAL, HORIZONTAL y CENTER.
+            d.setBillboard(Display.Billboard.FIXED);
             d.setBrightness(new Display.Brightness(15, 15));
             d.setPersistent(false);   // si el server cae, no queda basura
             d.setGravity(false);
