@@ -41,11 +41,15 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * En ambos casos los datos se leen y escriben SOLO en Data Components.
  *
- * DRAMA (ForgeSuspense + casi-fallos):
+ * DRAMA (ForgeSuspense + FusionHologram + casi-fallos):
  *  - Si suspense.on-apply esta activo y el exito efectivo es < 100, el
  *    veredicto se revela tras ~1.5s de redoble de yunque y particulas.
  *    El libro entra en la forja de inmediato (se consume del cursor);
  *    el inventario queda bloqueado hasta la revelacion.
+ *  - HOLOGRAMA DE FUSION: durante el redoble, el item objetivo y el libro
+ *    aparecen flotando frente al jugador (ItemDisplays), giran y se van
+ *    acercando hasta fundirse en un destello; el veredicto remata la escena
+ *    con fuegos (exito) o humo (fallo). Ver FusionHologram.
  *  - Fallo por 1-3 puntos -> "La forja fallo... ¡por un X%!".
  *  - Exito con margen <= 2 -> "¡Exito por los pelos!" con sonido propio.
  *  - Ruptura esquivada por 1-3 puntos -> mensaje de supervivencia y, en
@@ -201,6 +205,9 @@ public class DragAndDropListener implements Listener {
                 && plugin.getConfig().getBoolean("suspense.on-apply", true)
                 && effective < 100; // con exito garantizado no hay tension posible
         if (dramatic) {
+            // HOLOGRAMA DE FUSION: el item y el libro flotan frente al jugador,
+            // giran y se acercan hasta fundirse justo antes del veredicto.
+            FusionHologram.get(plugin).play(player, target);
             suspense.begin(player, resolution);
         } else {
             resolution.run();
@@ -355,6 +362,9 @@ public class DragAndDropListener implements Listener {
         target.setItemMeta(meta);
 
         plugin.messages().playSound(player, "apply-success"); // block.anvil.use
+        // REMATE DE LA FUSION: fuegos + destellos + level-up sobre el punto
+        // donde los hologramas acaban de fundirse.
+        FusionHologram.burstSuccess(player);
         player.getWorld().spawnParticle(Particle.ENCHANTED_HIT,
                 player.getLocation().add(0, 1, 0), 40, 0.4, 0.6, 0.4, 0.15);
         plugin.messages().send(player, "apply-success",
@@ -472,6 +482,8 @@ public class DragAndDropListener implements Listener {
                                EnchantDefinition def, int destroy, TierRegistry.Tier tier,
                                int failMargin) {
         plugin.messages().playSound(player, "apply-fail");
+        // LA FUSION SE APAGA: humo y chispas de lava sobre el punto del holograma.
+        FusionHologram.burstFail(player);
         player.getWorld().spawnParticle(Particle.ITEM,
                 player.getLocation().add(0, 1, 0), 25, 0.3, 0.5, 0.3, 0.1,
                 new ItemStack(Material.BOOK));
