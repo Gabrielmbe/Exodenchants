@@ -17,13 +17,19 @@
         <!-- Paper 1.21 requiere Java 21. Compilar con release 21 tambien
              funciona en servidores 26.x (que corren sobre Java 25). -->
         <maven.compiler.release>21</maven.compiler.release>
-        <!-- ProGuard 7.9.1 soporta class files hasta Java 26; las versiones
-             7.7.x fallan (result=1) al leer java.base.jmod de JDK 25+. -->
+        <!-- ProGuard 7.9.1 soporta class files hasta Java 26 (class 70). -->
         <proguard.version>7.9.1</proguard.version>
-        <!-- VIA DE ESCAPE: si ProGuard vuelve a fallar en algun entorno,
-             compila sin ofuscar con:  mvn clean package -Dproguard.skip=true
-             El jar resultante es identico en funcionalidad. -->
-        <proguard.skip>false</proguard.skip>
+        <!-- SEGURO POR DEFECTO: la ofuscacion queda DESACTIVADA salvo que el
+             entorno sea compatible. El perfil 'ofuscar' (mas abajo) la activa
+             automaticamente SOLO cuando:
+               1) el JDK es 21 a 26 (rango que ProGuard soporta), y
+               2) existe ${java.home}/jmods/java.base.jmod (JDK completo).
+             En cualquier otro caso ProGuard se salta solo y el build
+             SIEMPRE termina en BUILD SUCCESS con un jar funcional.
+             Forzar manualmente:
+               - saltar ofuscacion:  mvn clean package -Dproguard.skip=true
+               - forzar ofuscacion:  mvn clean package -Dproguard.skip=false -->
+        <proguard.skip>true</proguard.skip>
     </properties>
 
     <repositories>
@@ -92,15 +98,18 @@
             <!-- ============================================================
                  ProGuard: ofusca el jar final en la fase package.
                  El jar de target/ sale ya ofuscado con el mismo nombre.
-                 El mapa de renombres queda en target/proguard-map.txt:
+                 El mapa de renombres queda en target/proguard_map.txt:
                  GUARDALO por cada version publicada (sin el, los errores
                  de consola ofuscados son ilegibles).
 
-                 MODO TOLERANTE: -ignorewarnings + -dontwarn ** hacen que
-                 NINGUNA advertencia (clases de Paper/Fabled/PAPI/Vault no
-                 presentes como library jars, referencias opcionales, etc.)
-                 aborte el build. Si aun asi fallara en tu maquina, usa
-                 mvn clean package -Dproguard.skip=true para saltarlo.
+                 A PRUEBA DE FALLOS:
+                 - Solo corre cuando el perfil 'ofuscar' se activa (JDK 21-26
+                   con jmods). En JDK 27+, JREs sin jmods o entornos raros se
+                   salta automaticamente: el build nunca falla por ProGuard.
+                 - MODO TOLERANTE: -ignorewarnings + -dontwarn ** hacen que
+                   ninguna advertencia (clases de Paper/Fabled/PAPI/Vault no
+                   presentes como library jars, referencias opcionales, etc.)
+                   aborte el build.
                  ============================================================ -->
             <plugin>
                 <groupId>com.github.wvengen</groupId>
@@ -149,12 +158,7 @@
                         <option>-dontpreverify</option>
                         <option>-dontshrink</option>
 
-                        <!-- MODO TOLERANTE: ninguna advertencia aborta el build.
-                             Las clases de Paper, Fabled, PlaceholderAPI y Vault
-                             son 'provided': ProGuard no las ve y sin estas dos
-                             opciones cada referencia externa es un warning que
-                             termina en 'Please correct the above warnings first'
-                             y result=1. -->
+                        <!-- MODO TOLERANTE: ninguna advertencia aborta el build. -->
                         <option>-ignorewarnings</option>
                         <option>-dontwarn **</option>
                         <option>-dontnote **</option>
@@ -168,7 +172,7 @@
                         <option>-keep public class dev.fce.FabledCustomEnchantsPlugin { *; }</option>
 
                         <!-- Bukkit localiza los eventos por @EventHandler -->
-                        <option>-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod,Record</option>
+                        <option>-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod,Record,SourceFile,LineNumberTable</option>
                         <option>-keepclassmembers class * { @org.bukkit.event.EventHandler *; }</option>
 
                         <!-- Enums resueltos por reflexion -->
@@ -178,4 +182,24 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Activa la ofuscacion SOLO en entornos donde ProGuard funciona
+             garantizado: JDK 21 a 26 (rango soportado por ProGuard 7.9.x)
+             y con los jmods del JDK presentes. Ambas condiciones deben
+             cumplirse (Maven 3.2.2+). En cualquier otro entorno el build
+             empaqueta el jar sin ofuscar y termina en BUILD SUCCESS. -->
+        <profile>
+            <id>ofuscar</id>
+            <activation>
+                <jdk>[21,27)</jdk>
+                <file>
+                    <exists>${java.home}/jmods/java.base.jmod</exists>
+                </file>
+            </activation>
+            <properties>
+                <proguard.skip>false</proguard.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>
