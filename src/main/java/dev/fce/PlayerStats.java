@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ import java.util.UUID;
  *   · Racha de suerte: fallos consecutivos por tier, que otorgan un bono
  *     acumulativo al % de exito del siguiente intento de ese mismo tier
  *     (sistema anti-mala-suerte).
+ *   · Destino de forja: fallos consecutivos de FUSION por tier (pity de la
+ *     Forja de Fusion). Antes vivia solo en memoria y un relog o reinicio
+ *     borraba la racha del jugador; ahora sobrevive en stats.yml.
  *   · Puntuacion para el ranking: cada tier vale unos puntos configurables.
  *
  * El archivo se guarda de forma asincrona con un pequeno retardo agrupado,
@@ -158,6 +162,39 @@ public class PlayerStats {
         if (sec == null) return 0;
         for (String key : sec.getKeys(false)) total += sec.getInt(key, 0);
         return total;
+    }
+
+    // ------------------------------------------------------------
+    // DESTINO DE FORJA (pity de la Forja de Fusion)
+    // ------------------------------------------------------------
+    /**
+     * Fallos consecutivos de fusion por tier, persistidos en stats.yml.
+     * El pity es una promesa al jugador: no debe evaporarse con un relog,
+     * un reinicio o un crash (el autosave periodico tambien lo cubre).
+     */
+    public int fusionStreak(UUID uuid, String tierId) {
+        return data.getInt(uuid + ".fusion-streak." + tierKey(tierId), 0);
+    }
+
+    /** Fallo de fusion: incrementa la racha del tier y devuelve la resultante. */
+    public int onFusionFail(Player player, String tierId) {
+        String base = path(player);
+        int streak = fusionStreak(player.getUniqueId(), tierId) + 1;
+        data.set(base + ".name", player.getName());
+        data.set(base + ".fusion-streak." + tierKey(tierId), streak);
+        scheduleSave();
+        return streak;
+    }
+
+    /** Fusion exitosa: la racha de ese tier vuelve a cero. */
+    public void resetFusionStreak(Player player, String tierId) {
+        if (fusionStreak(player.getUniqueId(), tierId) == 0) return;
+        data.set(path(player) + ".fusion-streak." + tierKey(tierId), 0);
+        scheduleSave();
+    }
+
+    private String tierKey(String tierId) {
+        return tierId == null ? "" : tierId.toLowerCase(Locale.ROOT);
     }
 
     // ------------------------------------------------------------

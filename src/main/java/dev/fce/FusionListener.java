@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -34,7 +33,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *    encantamiento y MISMO nivel, en el inventario propio del jugador.
  *  - Tirada 1-100 contra la probabilidad de fusion del tier (modules/fusion.yml)
  *    mas el DESTINO DE FORJA acumulado (pity): cada fallo consecutivo del mismo
- *    tier suma puntos al siguiente intento.
+ *    tier suma puntos al siguiente intento. La racha se PERSISTE en stats.yml
+ *    (via PlayerStats), asi que sobrevive relogs y reinicios del servidor.
  *
  * Resultado con exito (nivel < maximo):
  *  - Libro de nivel +1.
@@ -81,9 +81,6 @@ public final class FusionListener implements Listener {
     private boolean broadcastEnabled;
     private final Set<String> broadcastTiers = new HashSet<>();
     private String broadcastMessage;
-
-    // Destino de forja: fallos consecutivos por jugador y tier (en memoria).
-    private final Map<UUID, Map<String, Integer>> fails = new HashMap<>();
 
     public FusionListener(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
@@ -338,24 +335,20 @@ public final class FusionListener implements Listener {
     }
 
     /* ==================== Destino de forja (pity) ==================== */
-
-    private int failsOf(Player player, String tierId) {
-        return fails.getOrDefault(player.getUniqueId(), Map.of())
-                .getOrDefault(tierId.toLowerCase(Locale.ROOT), 0);
-    }
+    // Persistido en stats.yml via PlayerStats: la racha sobrevive relogs,
+    // reinicios y crashes del servidor (antes vivia solo en memoria y se
+    // perdia justo cuando el jugador mas invertido estaba).
 
     private int addFail(Player player, String tierId) {
-        Map<String, Integer> byTier = fails.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
-        return byTier.merge(tierId.toLowerCase(Locale.ROOT), 1, Integer::sum);
+        return plugin.stats().onFusionFail(player, tierId);
     }
 
     private void resetFails(Player player, String tierId) {
-        Map<String, Integer> byTier = fails.get(player.getUniqueId());
-        if (byTier != null) byTier.remove(tierId.toLowerCase(Locale.ROOT));
+        plugin.stats().resetFusionStreak(player, tierId);
     }
 
     private int pityBonus(Player player, String tierId) {
-        return failsOf(player, tierId) * pityPerFail;
+        return plugin.stats().fusionStreak(player.getUniqueId(), tierId) * pityPerFail;
     }
 
     private int clamp(int value) {
