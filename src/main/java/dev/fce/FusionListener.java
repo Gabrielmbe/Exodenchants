@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -34,7 +35,15 @@ import java.util.concurrent.ThreadLocalRandom;
  *  - Tirada 1-100 contra la probabilidad de fusion del tier (modules/fusion.yml)
  *    mas el DESTINO DE FORJA acumulado (pity): cada fallo consecutivo del mismo
  *    tier suma puntos al siguiente intento. La racha se PERSISTE en stats.yml
- *    (via PlayerStats), asi que sobrevive relogs y reinicios del servidor.
+ *    (via PlayerStats.fusionStreak), asi que sobrevive relogs, reinicios y
+ *    crashes del servidor.
+ *
+ * DRAMA (ForgeSuspense + casi-fallos):
+ *  - El libro sacrificado se consume AL ENTRAR en la forja; si suspense.on-fusion
+ *    esta activo y la probabilidad efectiva es < 100, el veredicto se revela
+ *    tras ~1.5s de redoble (inventario bloqueado mientras tanto).
+ *  - Fallo por 1-3 puntos -> "La forja fallo... ¡por un X%!".
+ *  - Exito con margen <= 2 -> "¡Exito por los pelos!" con sonido propio.
  *
  * Resultado con exito (nivel < maximo):
  *  - Libro de nivel +1.
@@ -42,10 +51,9 @@ import java.util.concurrent.ThreadLocalRandom;
  *  - Ruptura: la MENOR de las dos.
  *
  * FUSION PERFECTA (ambos libros al nivel maximo):
- *  - Sin tirada: exito garantizado. El libro resultante conserva el nivel
- *    maximo y gana perfect.success-bonus puntos de exito (hasta el techo
- *    limits.max-success-rate del config principal). Da uso a los duplicados
- *    de nivel maximo, que antes eran peso muerto.
+ *  - Sin tirada: exito garantizado (y sin suspenso: no hay tension posible).
+ *    El libro resultante conserva el nivel maximo y gana perfect.success-bonus
+ *    puntos de exito (hasta el techo limits.max-success-rate).
  *
  * Si la fusion FALLA:
  *  - Solo se consume el libro del cursor (el sacrificado); el otro sobrevive.
@@ -171,6 +179,7 @@ public final class FusionListener implements Listener {
         int cap = Math.min(100, plugin.getConfig().getInt("limits.max-success-rate", 100));
 
         // --- FUSION PERFECTA: ambos al nivel maximo -> mejora garantizada ---
+        // Sin tirada y sin suspenso: no hay tension posible.
         if (la >= def.maxLevel() && lb >= def.maxLevel()) {
             if (!perfectEnabled) {
                 plugin.messages().sendRaw(player,
@@ -220,13 +229,54 @@ public final class FusionListener implements Listener {
 
         int roll = ThreadLocalRandom.current().nextInt(1, 101);
 
+        // El libro sacrificado entra en la forja YA: se consume del cursor
+        // antes del redoble. El veredicto se revela al final del suspenso.
+        consumeCursorOne(event, cursor);
+
+        final Inventory inv = event.getClickedInventory();
+        final int slot = event.getSlot();
+        final int fRoll = roll;
+        final int fEffective = effective;
+        final int fLevel = la;
+
+        Runnable resolution = () -> resolveFusion(player, inv, slot, target, def, tier,
+                sa, sb, fLevel, da, db, cap, fRoll, fEffective);
+
+        ForgeSuspense suspense = ForgeSuspense.get(plugin);
+        boolean dramatic = suspense.enabled()
+                && plugin.getConfig().getBoolean("suspense.on-fusion", true)
+                && effective < 100;
+        if (dramatic) {
+            suspense.begin(player, resolution);
+        } else {
+            resolution.run();
+        }
+    }
+
+    /**
+     * Veredicto de la fusion (puede correr DESPUES del evento, tras el
+     * suspenso: por eso opera sobre inv+slot y nunca sobre el evento).
+     */
+    private void resolveFusion(Player player, Inventory inv, int slot, ItemStack target,
+                               EnchantDefinition def, TierRegistry.Tier tier,
+                               int sa, int sb, int level, int da, int db, int cap,
+                               int roll, int effective) {
         if (roll <= effective) {
-            resetFails(player, tier.id());
-            int newLevel = la + 1;
+            plugin.stats().resetFusionStreak(player, tier.id());
+            int newLevel = level + 1;
             int newSuccess = Math.min(cap, Math.max(sa, sb) + successBonus);
             int newDestroy = Math.max(0, Math.min(da, db));
             ItemStack fused = plugin.books().create(def, tier, newLevel, newSuccess, newDestroy);
-            consumeAndGive(event, player, cursor, target, fused);
+
+            // El sacrificado ya se consumio al entrar; ahora se transforma el
+            // superviviente en el libro fusionado.
+            if (target.getAmount() <= 1) {
+                if (inv != null) inv.setItem(slot, fused);
+                else giveOrDrop(player, fused);
+            } else {
+                target.setAmount(target.getAmount() - 1);
+                giveOrDrop(player, fused);
+            }
 
             plugin.messages().playSound(player, "apply-success");
             player.getWorld().spawnParticle(Particle.ENCHANTED_HIT,
@@ -235,6 +285,15 @@ public final class FusionListener implements Listener {
                     "<green>⚒ ¡Fusión exitosa!</green> <white>" + def.displayName() + " "
                             + BookFactory.roman(newLevel) + "</white> <gray>· Éxito <green>"
                             + newSuccess + "%</green> · Ruptura <red>" + newDestroy + "%</red>");
+
+            // CASI-PERDER, GANANDO: margen 0-2 -> "por los pelos".
+            int margin = effective - roll;
+            if (margin <= 2 && effective < 100) {
+                player.playSound(player.getLocation(), "block.bell.use", 1.0f, 1.5f);
+                plugin.messages().sendRaw(player,
+                        "<gold>⚔ ¡Éxito por los pelos!</gold> <gray>La forja aguantó por <white>"
+                                + (margin + 1) + "</white> punto(s).");
+            }
 
             if (broadcastEnabled && broadcastTiers.contains(tier.id().toLowerCase(Locale.ROOT))) {
                 String msg = broadcastMessage
@@ -247,12 +306,19 @@ public final class FusionListener implements Listener {
                 }
             }
         } else {
-            int streak = addFail(player, tier.id());
-            consumeCursorOne(event, cursor);
+            int streak = plugin.stats().onFusionFail(player, tier.id());
 
             plugin.messages().playSound(player, "purchase-denied");
             plugin.messages().sendRaw(player,
                     "<red>⚒ La fusión ha fallado.</red> <gray>El libro sacrificado se consumió; el otro sobrevive.");
+
+            // CASI-GANAR, PERDIENDO: fallo por 1-3 puntos, dilo.
+            int margin = roll - effective;
+            if (margin >= 1 && margin <= 3) {
+                plugin.messages().sendRaw(player,
+                        "<red>La forja falló... <white>¡por un " + margin + "%!</white>");
+            }
+
             plugin.messages().sendRaw(player,
                     "<gray>Racha de forja: <white>" + streak + "</white> <dark_gray>· <gray>próximo intento <green>+"
                             + pityBonus(player, tier.id()) + "%</green>");
@@ -327,25 +393,12 @@ public final class FusionListener implements Listener {
         }
         if (perfectEnabled) {
             out.add("<gray>Dos libros al nivel máximo → <gold>Fusión Perfecta</gold>: <green>+"
-                    + perfectBonus + "%</green> de éxito, sin riesgo.");
+                    + perfectBonus + "%</green> de éxito garantizado.");
         }
-        out.add("<gray>Si falla, solo pierdes el libro sacrificado y acumulas <green>+" + pityPerFail
-                + "%</green> por fallo para el próximo intento.");
         return out;
     }
 
-    /* ==================== Destino de forja (pity) ==================== */
-    // Persistido en stats.yml via PlayerStats: la racha sobrevive relogs,
-    // reinicios y crashes del servidor (antes vivia solo en memoria y se
-    // perdia justo cuando el jugador mas invertido estaba).
-
-    private int addFail(Player player, String tierId) {
-        return plugin.stats().onFusionFail(player, tierId);
-    }
-
-    private void resetFails(Player player, String tierId) {
-        plugin.stats().resetFusionStreak(player, tierId);
-    }
+    /* ============ Destino de forja (pity, persistido en stats.yml) ============ */
 
     private int pityBonus(Player player, String tierId) {
         return plugin.stats().fusionStreak(player.getUniqueId(), tierId) * pityPerFail;

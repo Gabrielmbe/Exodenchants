@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -39,6 +40,16 @@ import java.util.concurrent.ThreadLocalRandom;
  *       mode: success -> sube el % de exito
  *
  * En ambos casos los datos se leen y escriben SOLO en Data Components.
+ *
+ * DRAMA (ForgeSuspense + casi-fallos):
+ *  - Si suspense.on-apply esta activo y el exito efectivo es < 100, el
+ *    veredicto se revela tras ~1.5s de redoble de yunque y particulas.
+ *    El libro entra en la forja de inmediato (se consume del cursor);
+ *    el inventario queda bloqueado hasta la revelacion.
+ *  - Fallo por 1-3 puntos -> "La forja fallo... ¡por un X%!".
+ *  - Exito con margen <= 2 -> "¡Exito por los pelos!" con sonido propio.
+ *  - Ruptura esquivada por 1-3 puntos -> mensaje de supervivencia y, en
+ *    tiers altos, anuncio global (announce.on-survived).
  *
  * SEGURIDAD:
  *  - Solo se opera sobre ITEMS DEL INVENTARIO DEL PROPIO JUGADOR. Los clics
@@ -162,6 +173,8 @@ public class DragAndDropListener implements Listener {
         int effective = Math.min(100, success + luck);
 
         int roll = ThreadLocalRandom.current().nextInt(1, 101);
+        // El libro entra en la forja YA: se consume del cursor antes del
+        // redoble. El resultado se revela al final del suspenso.
         event.getView().setCursor(null);
 
         if (luck > 0) {
@@ -170,12 +183,51 @@ public class DragAndDropListener implements Listener {
                     "exito", String.valueOf(effective));
         }
 
+        // Todo lo que toca el inventario tras el suspenso usa inv+slot, nunca
+        // el evento (ya habra terminado). ForgeSuspense bloquea el inventario
+        // mientras tanto, asi que el slot no puede cambiar.
+        final Inventory inv = event.getClickedInventory();
+        final int slot = event.getSlot();
+        final int fEffective = effective;
+        final int fRoll = roll;
+        final TierRegistry.Tier fTier = tier;
+        final String fTierId = tierId;
+
+        Runnable resolution = () -> resolveApply(player, inv, slot, target, targetMeta,
+                itemData, def, level, success, destroy, fTier, fTierId, fRoll, fEffective);
+
+        ForgeSuspense suspense = ForgeSuspense.get(plugin);
+        boolean dramatic = suspense.enabled()
+                && plugin.getConfig().getBoolean("suspense.on-apply", true)
+                && effective < 100; // con exito garantizado no hay tension posible
+        if (dramatic) {
+            suspense.begin(player, resolution);
+        } else {
+            resolution.run();
+        }
+    }
+
+    /** Veredicto de la tirada: exito (con posible "por los pelos") o fallo. */
+    private void resolveApply(Player player, Inventory inv, int slot, ItemStack target,
+                              ItemMeta targetMeta, PersistentDataContainer itemData,
+                              EnchantDefinition def, int level, int success, int destroy,
+                              TierRegistry.Tier tier, String tierId, int roll, int effective) {
         if (roll <= effective) {
             applyEnchant(player, target, targetMeta, itemData, def, level);
+
+            // CASI-PERDER, GANANDO: margen 0-2 -> "por los pelos", sonido propio.
+            int margin = effective - roll;
+            if (margin <= 2 && effective < 100) {
+                player.playSound(player.getLocation(), "block.bell.use", 1.0f, 1.5f);
+                plugin.messages().sendRaw(player,
+                        "<gold>⚔ ¡Éxito por los pelos!</gold> <gray>La tirada entró por <white>"
+                                + (margin + 1) + "</white> punto(s).");
+            }
+
             plugin.stats().onSuccess(player, tierId);
             if (tier != null) plugin.announcer().applied(player, def, tier, level, success);
         } else {
-            handleFailure(player, event, def, destroy, tier);
+            handleFailure(player, inv, slot, target, def, destroy, tier, roll - effective);
             int streak = plugin.stats().onFailure(player, tierId);
             int next = plugin.stats().luckBonus(player, tierId);
             if (next > 0) {
@@ -409,24 +461,45 @@ public class DragAndDropListener implements Listener {
                 + raw.substring(1).toLowerCase(Locale.ROOT);
     }
 
-    private void handleFailure(Player player, InventoryClickEvent event,
-                               EnchantDefinition def, int destroy, TierRegistry.Tier tier) {
+    /**
+     * Fallo de la tirada de exito. El casi-fallo (1-3 puntos) se dramatiza y
+     * la tirada de ruptura tiene su propio casi-perder: si el item se salva
+     * por 1-3 puntos, se dice — y en tiers altos se anuncia al servidor.
+     * Opera sobre inv+slot porque puede ejecutarse DESPUES del evento (tras
+     * el suspenso); ForgeSuspense garantiza que el slot no cambio.
+     */
+    private void handleFailure(Player player, Inventory inv, int slot, ItemStack target,
+                               EnchantDefinition def, int destroy, TierRegistry.Tier tier,
+                               int failMargin) {
         plugin.messages().playSound(player, "apply-fail");
         player.getWorld().spawnParticle(Particle.ITEM,
                 player.getLocation().add(0, 1, 0), 25, 0.3, 0.5, 0.3, 0.1,
                 new ItemStack(Material.BOOK));
         plugin.messages().send(player, "apply-fail", "enchant", def.displayName());
 
+        // CASI-GANAR, PERDIENDO: el mecanismo mas potente de las tragamonedas.
+        if (failMargin >= 1 && failMargin <= 3) {
+            plugin.messages().sendRaw(player,
+                    "<red>La forja falló... <white>¡por un " + failMargin + "%!</white>");
+        }
+
         // Segunda tirada: ruptura del item destino
         int destroyRoll = ThreadLocalRandom.current().nextInt(1, 101);
         if (destroyRoll <= destroy) {
-            event.setCurrentItem(null);
+            if (inv != null) inv.setItem(slot, null);
             plugin.messages().playSound(player, "item-destroyed");
             player.getWorld().spawnParticle(Particle.DUST,
                     player.getLocation().add(0, 1, 0), 30, 0.4, 0.6, 0.4,
                     new Particle.DustOptions(Color.fromRGB(0x7B2CBF), 1.2f));
             plugin.messages().send(player, "item-destroyed");
             if (tier != null) plugin.announcer().destroyed(player, def, tier);
+        } else if (destroy > 0 && destroyRoll - destroy <= 3) {
+            // SUPERVIVENCIA POR UN PELO: el item tembló... y sigue entero.
+            player.playSound(player.getLocation(), "block.anvil.land", 0.8f, 0.6f);
+            plugin.messages().sendRaw(player,
+                    "<yellow>⚡ Tu objeto tembló en la forja... y sobrevivió por un <white>"
+                            + (destroyRoll - destroy) + "%</white>.");
+            if (tier != null) plugin.announcer().survived(player, def, tier);
         }
     }
 
