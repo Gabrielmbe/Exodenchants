@@ -1,6 +1,7 @@
 package dev.fce;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -35,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *                  acercan (aceleracion suave, vaiven vertical, giro propio
  *                  cada vez mas rapido, particulas en aumento).
  *   2. HOLD      — al tocarse se FUNDEN: destello, el libro desaparece
- *                  \"absorbido\" y el item queda flotando en el centro,
+ *                  "absorbido" y el item queda flotando en el centro,
  *                  girando rapido con un vortice de particulas y un pulso
  *                  de escala. El holograma NO se borra: espera el veredicto.
  *   3. SUCCESS / FAIL — cuando DragAndDropListener resuelve la tirada
@@ -184,7 +185,7 @@ public final class FusionHologram implements Listener {
         s.item.teleport(a);
         if (s.book != null) s.book.teleport(b);
 
-        // Latido de escala conforme se acercan (la energia \"aprieta\")
+        // Latido de escala conforme se acercan (la energia "aprieta")
         float pulse = 1f + (float) Math.sin(s.phaseTick * 0.45) * 0.05f * eased;
         s.item.setTransformation(spin(s.spin, s.scale * pulse));
         if (s.book != null) s.book.setTransformation(spin(-s.spin, s.scale * pulse));
@@ -217,7 +218,7 @@ public final class FusionHologram implements Listener {
 
     /** El libro es absorbido por el item: destello y paso a HOLD. */
     private void merge(Player player, Session s) {
-        player.getWorld().spawnParticle(Particle.FLASH, s.center, 1);
+        player.getWorld().spawnParticle(Particle.FLASH, s.center, 1, Color.WHITE);
         player.getWorld().spawnParticle(Particle.END_ROD, s.center, 24, 0.15, 0.15, 0.15, 0.12);
         player.playSound(s.center, "block.respawn_anchor.charge", 0.8f, 1.4f);
         if (s.book != null) {
@@ -249,7 +250,7 @@ public final class FusionHologram implements Listener {
         // Cortafuegos: el veredicto siempre llega en unos pocos ticks;
         // si algo lo impidiera, la escena no queda flotando para siempre.
         if (s.phaseTick > HOLD_TIMEOUT) {
-            player.getWorld().spawnParticle(Particle.FLASH, s.center, 1);
+            player.getWorld().spawnParticle(Particle.FLASH, s.center, 1, Color.WHITE);
             stop(player.getUniqueId());
         }
     }
@@ -279,7 +280,7 @@ public final class FusionHologram implements Listener {
         }
 
         if (s.phaseTick >= VERDICT_TICKS) {
-            player.getWorld().spawnParticle(Particle.FLASH, loc, 1);
+            player.getWorld().spawnParticle(Particle.FLASH, loc, 1, Color.WHITE);
             stop(player.getUniqueId());
         }
     }
@@ -338,7 +339,7 @@ public final class FusionHologram implements Listener {
     }
 
     /**
-     * REMATE DE EXITO (\"aplica\"). Si hay holograma en curso, el remate corre
+     * REMATE DE EXITO ("aplica"). Si hay holograma en curso, el remate corre
      * sobre el (asciende entre fuegos y SOLO entonces se elimina); si no,
      * particulas clasicas frente al jugador.
      */
@@ -353,7 +354,7 @@ public final class FusionHologram implements Listener {
     }
 
     /**
-     * REMATE DE FALLO (\"no aplica\"). Si hay holograma en curso, tiembla y se
+     * REMATE DE FALLO ("no aplica"). Si hay holograma en curso, tiembla y se
      * hunde entre humo antes de eliminarse; si no, humo clasico.
      */
     public static void burstFail(Player player) {
