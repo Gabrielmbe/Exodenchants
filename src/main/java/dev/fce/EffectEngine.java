@@ -18,9 +18,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -37,6 +40,18 @@ import java.util.concurrent.ThreadLocalRandom;
  *   kill   -> al matar (arma en mano)
  *   mine   -> al romper un bloque (herramienta en mano)
  *   land   -> al caer (botas y armadura)
+ *
+ * BLINDAJE (anti "Could not pass event"):
+ *  - GUARDA DE REENTRADA: la accion 'damage' llama a target.damage(), que
+ *    dispara OTRO EntityDamageByEntityEvent. Sin guarda, un encantamiento de
+ *    daño con 100% de probabilidad se re-dispara dentro de si mismo hasta
+ *    reventar la pila (StackOverflowError) y Bukkit registra el error en
+ *    cada golpe. Mientras un efecto esta ejecutandose, los eventos de daño
+ *    que ese mismo efecto genere se ignoran.
+ *  - AISLAMIENTO DE ERRORES: cada accion corre en su propio try/catch. Un
+ *    efecto mal configurado ya no tumba el handler completo: se registra UNA
+ *    advertencia legible (con el id del encantamiento) por tipo de fallo y
+ *    el resto de encantamientos sigue funcionando.
  */
 public class EffectEngine implements Listener {
 
@@ -47,6 +62,10 @@ public class EffectEngine implements Listener {
     public static final String LAND = "land";
 
     private final FabledCustomEnchantsPlugin plugin;
+    /** Jugadores cuyo efecto esta generando daño ahora mismo (reentrada). */
+    private final Set<UUID> dealing = new HashSet<>();
+    /** Fallos ya reportados (enchant + causa), para no inundar la consola. */
+    private final Set<String> reported = new HashSet<>();
 
     public EffectEngine(FabledCustomEnchantsPlugin plugin) {
         this.plugin = plugin;
@@ -57,34 +76,55 @@ public class EffectEngine implements Listener {
     // ------------------------------------------------------------
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity victim)) return;
+        try {
+            if (!(event.getEntity() instanceof LivingEntity victim)) return;
 
-        Player attacker = resolveAttacker(event);
-        if (attacker != null && !attacker.equals(victim)) {
-            runHand(attacker, victim, ATTACK);
-        }
-        if (victim instanceof Player defender) {
-            runEquipment(defender, attacker, DEFEND);
+            Player attacker = resolveAttacker(event);
+            // Daño generado por un efecto en curso: no re-disparar encantamientos.
+            if (attacker != null && dealing.contains(attacker.getUniqueId())) return;
+            if (victim instanceof Player defenderCheck
+                    && dealing.contains(defenderCheck.getUniqueId())) return;
+
+            if (attacker != null && !attacker.equals(victim)) {
+                runHand(attacker, victim, ATTACK);
+            }
+            if (victim instanceof Player defender) {
+                runEquipment(defender, attacker, DEFEND);
+            }
+        } catch (Throwable t) {
+            report("attack/defend", t);
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onFall(EntityDamageEvent event) {
-        if (event.getCause() != EntityDamageEvent.DamageCause.FALL) return;
-        if (event.getEntity() instanceof Player player) {
-            runEquipment(player, null, LAND);
+        try {
+            if (event.getCause() != EntityDamageEvent.DamageCause.FALL) return;
+            if (event.getEntity() instanceof Player player) {
+                runEquipment(player, null, LAND);
+            }
+        } catch (Throwable t) {
+            report("land", t);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onKill(EntityDeathEvent event) {
-        Player killer = event.getEntity().getKiller();
-        if (killer != null) runHand(killer, event.getEntity(), KILL);
+        try {
+            Player killer = event.getEntity().getKiller();
+            if (killer != null) runHand(killer, event.getEntity(), KILL);
+        } catch (Throwable t) {
+            report("kill", t);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        runHand(event.getPlayer(), null, MINE);
+        try {
+            runHand(event.getPlayer(), null, MINE);
+        } catch (Throwable t) {
+            report("mine", t);
+        }
     }
 
     private Player resolveAttacker(EntityDamageByEntityEvent event) {
@@ -139,8 +179,13 @@ public class EffectEngine implements Listener {
 
         for (EnchantDefinition.Action action : effects.actions()) {
             LivingEntity target = action.onVictim() ? victim : player;
-            if (target == null || target.isDead()) continue;
-            apply(player, target, action, level);
+            if (target == null || target.isDead() || !target.isValid()) continue;
+            try {
+                apply(player, target, action, level);
+            } catch (Throwable t) {
+                // Un efecto roto no debe tumbar el evento ni el resto de efectos.
+                report(def.id() + "/" + action.type(), t);
+            }
         }
     }
 
@@ -154,20 +199,39 @@ public class EffectEngine implements Listener {
                 target.addPotionEffect(new PotionEffect(type, ticks,
                         Math.max(0, action.amplifier()), false, true, true));
             }
-            case "heal" -> target.setHealth(Math.min(maxHealth(target),
+            case "heal" -> target.setHealth(clampHealth(target,
                     target.getHealth() + action.amountAt(level)));
             case "damage" -> {
                 double amount = action.amountAt(level);
                 if (amount <= 0) return;
                 if (action.trueDamage()) {
                     // Daño real: ignora armadura y encantamientos de proteccion
-                    target.setHealth(Math.max(0, target.getHealth() - amount));
+                    target.setHealth(clampHealth(target, target.getHealth() - amount));
                 } else {
-                    target.damage(amount, source);
+                    // GUARDA DE REENTRADA: el daño que generamos aqui dispara
+                    // otro EntityDamageByEntityEvent; marcamos al causante para
+                    // que ese evento anidado no re-ejecute encantamientos.
+                    UUID id = source.getUniqueId();
+                    boolean added = dealing.add(id);
+                    try {
+                        target.damage(amount, source);
+                    } finally {
+                        if (added) dealing.remove(id);
+                    }
                 }
             }
             case "fire" -> target.setFireTicks((int) Math.round(action.secondsAt(level) * 20));
-            case "lightning" -> target.getWorld().strikeLightning(target.getLocation());
+            case "lightning" -> {
+                // strikeLightning tambien genera eventos de daño en cadena:
+                // misma guarda que 'damage'.
+                UUID id = source.getUniqueId();
+                boolean added = dealing.add(id);
+                try {
+                    target.getWorld().strikeLightning(target.getLocation());
+                } finally {
+                    if (added) dealing.remove(id);
+                }
+            }
             case "push" -> {
                 Vector away = target.getLocation().toVector()
                         .subtract(source.getLocation().toVector());
@@ -192,6 +256,21 @@ public class EffectEngine implements Listener {
             default -> {
             }
         }
+    }
+
+    /** setHealth lanza excepcion fuera de [0, max]: siempre dentro del rango. */
+    private static double clampHealth(LivingEntity target, double desired) {
+        return Math.max(0, Math.min(maxHealth(target), desired));
+    }
+
+    /** Advierte UNA sola vez por (origen, tipo de error): consola legible. */
+    private void report(String where, Throwable t) {
+        String key = where + "|" + t.getClass().getName();
+        if (!reported.add(key)) return;
+        plugin.getLogger().warning("Efecto con error en '" + where + "': "
+                + t.getClass().getSimpleName()
+                + (t.getMessage() == null ? "" : " - " + t.getMessage())
+                + " (solo se avisa una vez; revisa el YAML de ese encantamiento)");
     }
 
     /**
