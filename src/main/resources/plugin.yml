@@ -7,7 +7,8 @@ softdepend: [Fabled, Vault, PlaceholderAPI]
 commands:
   encantos:
     description: Abre el menu de encantamientos.
-    usage: /encantos [catalogo | categorias | polvos | mercado | top | combos | inspect | check | debug | reload | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]
+    aliases: [fce]
+    usage: /encantos [catalogo | categorias | polvos | mercado | top | combos | fusion | reciclar | inspect | check | debug | reload | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]
 permissions:
   fce.admin:
     description: Acceso a los subcomandos administrativos.
