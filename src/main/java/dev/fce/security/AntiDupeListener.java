@@ -3,6 +3,7 @@ package dev.fce.security;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 
@@ -26,15 +28,16 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Módulo antidupe de FabledCustomEnchants (v3).
+ * Módulo antidupe de FabledCustomEnchants (v3.1).
  *
  * Qué hace:
  *  1) Bloquea meter/sacar ítems del plugin (libros fe_id y polvos/esencias
- *     fd_id) en GUIs de comercio: villagers (MERCHANT), GUIs cuyo
- *     InventoryHolder pertenece a un plugin de trade conocido (configurable
- *     en antidupe.trade-holder-packages) y — como red de apoyo — cualquier
- *     GUI cuyo título contenga palabras de trade (antidupe.trade-keywords).
- *     Ahí viven los exploits de desincronización de inventario.
+ *     fd_id) en GUIs de comercio: villagers (MERCHANT) AJENOS al plugin,
+ *     GUIs cuyo InventoryHolder pertenece a un plugin de trade conocido
+ *     (configurable en antidupe.trade-holder-packages) y — como red de
+ *     apoyo — cualquier GUI cuyo título contenga palabras de trade
+ *     (antidupe.trade-keywords). Ahí viven los exploits de desincronización
+ *     de inventario.
  *  2) Bloquea meter ítems del plugin en estaciones que transforman ítems
  *     (yunque, esmeril, mesa de herrería, telar, mesa de encantar...), que
  *     pueden clonar o corromper los Data Components.
@@ -44,6 +47,15 @@ import java.util.Set;
  *  4) Resincroniza el inventario del jugador un tick después de cerrar una
  *     GUI de comercio, una estación bloqueada o un menú del propio plugin,
  *     para matar ítems fantasma del lado del cliente.
+ *
+ * EXCEPCIÓN — Encantador Errante (v3.1):
+ *  El NPC propio del plugin (TraderManager, marcado con la clave fe_trader
+ *  en su PersistentDataContainer) VENDE libros y polvos del sistema a
+ *  través de la GUI vanilla de merchant. Bloquear su GUI hacía imposible
+ *  comprarle: el jugador recibía "No puedes usar libros..." al retirar el
+ *  resultado. Su inventario de merchant se considera DE CONFIANZA: los
+ *  trades los construye el propio plugin y la transacción la ejecuta el
+ *  código vanilla, exactamente igual que con un bibliotecario normal.
  *
  * Prioridad: LOW en los eventos de clic/drag, para que esta capa de
  * seguridad evalúe SIEMPRE antes que la mecánica de drag &amp; drop
@@ -63,6 +75,9 @@ import java.util.Set;
  *     antiDupe.reload();
  */
 public final class AntiDupeListener implements Listener {
+
+    /** Clave PDC que marca al Encantador Errante propio (ver TraderManager). */
+    private static final String TRADER_KEY = "fe_trader";
 
     /** Títulos de GUI (en minúsculas) que se consideran de comercio por defecto. */
     private static final List<String> DEFAULT_TRADE_KEYWORDS = List.of(
@@ -145,7 +160,13 @@ public final class AntiDupeListener implements Listener {
     /* ==================== Clasificación de GUIs ==================== */
 
     private boolean isTradeGui(InventoryView view) {
-        if (view.getTopInventory().getType() == InventoryType.MERCHANT) return true;
+        if (view.getTopInventory().getType() == InventoryType.MERCHANT) {
+            // EXCEPCIÓN: el Encantador Errante del propio plugin vende
+            // libros/polvos del sistema; su GUI es de confianza. Sin esta
+            // exención era imposible comprarle (el retiro del resultado
+            // disparaba el bloqueo "No puedes usar libros...").
+            return !isOwnTrader(view.getTopInventory());
+        }
 
         // Detección robusta: el holder de la GUI pertenece a un plugin de
         // comercio conocido (independiente del idioma/estilo del título).
@@ -161,6 +182,20 @@ public final class AntiDupeListener implements Listener {
         String title = ChatColor.stripColor(view.getTitle()).toLowerCase(Locale.ROOT);
         for (String kw : tradeKeywords) {
             if (title.contains(kw)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * ¿La GUI de merchant pertenece al Encantador Errante de este plugin?
+     * Se identifica por la clave fe_trader en el PersistentDataContainer
+     * de la entidad comerciante (la pone TraderManager al invocarlo).
+     */
+    private boolean isOwnTrader(Inventory top) {
+        if (!(top instanceof MerchantInventory merchantInv)) return false;
+        if (!(merchantInv.getMerchant() instanceof Entity entity)) return false;
+        for (NamespacedKey key : entity.getPersistentDataContainer().getKeys()) {
+            if (key.getKey().equals(TRADER_KEY)) return true;
         }
         return false;
     }

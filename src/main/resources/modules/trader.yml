@@ -1,6 +1,7 @@
 # ============================================================
 #  modules/trader.yml — Encantador Errante (NPC de trades)
-#  /encantos trader spawn | remove | refresh   (solo fce.admin)
+#  /encantos trader spawn | egg [cantidad] | remove | refresh
+#  (solo fce.admin)
 #
 #  Cada aldeano se invoca con un stock ALEATORIO por tier.
 #  El éxito y la ruptura de cada libro se tiran con las MISMAS
@@ -9,10 +10,40 @@
 #
 #  Los trades tienen usos limitados y NUNCA se reabastecen:
 #  agotado el stock hay que invocar otro NPC o usar refresh.
+#
+#  NOVEDADES:
+#   - egg: huevo de invocación con lore narrativo. Al usarlo
+#     sobre un bloque consume el huevo e invoca al Encantador
+#     con una ceremonia de partículas. Repártelo como premio
+#     de eventos, crates o votos.
+#   - subtitle: título holográfico flotante sobre el NPC.
+#   - aura: doble hélice violeta + runas + halo de luz + 
+#     campanadas de amatista alrededor del NPC.
 # ============================================================
 
 trader:
   name: "<gradient:#7B2CBF:#C77DFF>✦ Encantador Errante ✦</gradient>"
+  subtitle: "<gradient:#C77DFF:#E0AAFF><i>Mercader de Reliquias Arcanas</i></gradient>"
+
+  # Aura arcana permanente alrededor del NPC
+  aura:
+    enabled: true
+
+  # Huevo de invocación (/encantos trader egg)
+  egg:
+    name: "<gradient:#7B2CBF:#C77DFF>✦ Huevo del Encantador Errante ✦</gradient>"
+    lore:
+      - "<dark_gray>│ <gray>Nadie sabe de qué mundo procede."
+      - "<dark_gray>│ <gray>Camina entre dimensiones, coleccionando"
+      - "<dark_gray>│ <gray>saberes que los mortales olvidaron."
+      - "<dark_gray>│"
+      - "<dark_gray>│ <#C77DFF>Úsalo sobre el suelo para invocar"
+      - "<dark_gray>│ <#C77DFF>al Encantador Errante."
+      - "<dark_gray>│"
+      - "<dark_gray>│ <gray>Comercia <white>libros</white>, <white>polvos</white> y <white>esencias</white>"
+      - "<dark_gray>│ <gray>con stock <white>aleatorio</white> y <white>limitado</white>."
+      - "<dark_gray>│"
+      - "<dark_gray>│ <#9D4EDD>✦ Reliquia de invocación · un solo uso ✦"
 
   # Stock por tier:
   #   count     = cuántos libros distintos ofrece de ese tier

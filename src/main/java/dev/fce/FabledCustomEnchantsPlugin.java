@@ -119,8 +119,9 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(effects, this);
         getServer().getPluginManager().registerEvents(toolMechanics, this);
         getServer().getPluginManager().registerEvents(combos, this);
-        // Encantador Errante: proteccion del NPC de trades
+        // Encantador Errante: proteccion del NPC, huevo de invocacion y aura
         getServer().getPluginManager().registerEvents(trader, this);
+        trader.startAura();
         antiDupe = dev.fce.security.AntiDupeListener.register(this);
         combos.start();
         hookPlaceholders();
@@ -277,9 +278,18 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
                 }
                 String action = args.length >= 2 ? args[1].toLowerCase(Locale.ROOT) : "spawn";
                 switch (action) {
-                    case "spawn" -> {
-                        trader.spawn(player);
-                        player.sendMessage("Encantador Errante invocado con stock aleatorio.");
+                    case "spawn" -> trader.spawn(player);
+                    case "egg", "huevo" -> {
+                        int amount = 1;
+                        if (args.length >= 3) {
+                            try {
+                                amount = Math.max(1, Math.min(16, Integer.parseInt(args[2])));
+                            } catch (NumberFormatException ignored) {
+                                amount = 1;
+                            }
+                        }
+                        trader.giveEgg(player, amount);
+                        player.sendMessage("Huevo(s) de invocacion del Encantador Errante: " + amount);
                     }
                     case "remove", "quitar" -> {
                         int removed = trader.removeNearby(player, 6);
@@ -293,7 +303,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
                                 ? "Stock del Encantador renovado."
                                 : "No hay ningun Encantador Errante cerca (6 bloques).");
                     }
-                    default -> player.sendMessage("Uso: /" + label + " trader [spawn | remove | refresh]");
+                    default -> player.sendMessage("Uso: /" + label + " trader [spawn | egg [cantidad] | remove | refresh]");
                 }
                 return true;
             }
@@ -364,7 +374,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
             default -> {
                 player.sendMessage("Uso: /" + label
                         + " [catalogo | categorias | polvos | mercado | top | combos | fusion | reciclar"
-                        + " | inspect | check | debug | reload | trader <spawn|remove|refresh>"
+                        + " | inspect | check | debug | reload | trader <spawn|egg|remove|refresh>"
                         + " | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]");
                 return true;
             }
