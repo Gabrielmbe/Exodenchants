@@ -1,0 +1,50 @@
+# ============================================================
+#  enchants/pulso_vital.yml — Pulso Vital
+# ============================================================
+
+id: pulso_vital
+enabled: true
+
+display-name: "Pulso Vital"
+tier: legendario
+max-level: 3
+icon: GHAST_TEAR
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts:
+  - vampirismo
+
+lore-line: "<gradient:#FFB703:#FB8500>Pulso Vital {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Al golpear, probabilidad de liberar un pulso que"
+  - "<gray>te cura y acelera brevemente."
+  - "<dark_gray>│ <gray>Probabilidad: <white>15% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Curación: <white>1.0 + 0.5</white> <gray>por nivel"
+
+fabled-skill: ""
+sync-level-with-skill: false
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 15
+  chance-scale: 5
+  actions:
+    - type: heal
+      target: self
+      value-base: 1
+      value-scale: 0.5
+    - type: potion
+      target: self
+      value: Speed
+      amplifier: 0
+      seconds-base: 2
+      seconds-scale: 1
+    - type: particle
+      target: self
+      value: Heart
+      count: 6

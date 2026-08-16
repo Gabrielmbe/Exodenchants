@@ -1,0 +1,64 @@
+# ============================================================
+#  modules/trader.yml — Encantador Errante (NPC de trades)
+#  /encantos trader spawn | remove | refresh   (solo fce.admin)
+#
+#  Cada aldeano se invoca con un stock ALEATORIO por tier.
+#  El éxito y la ruptura de cada libro se tiran con las MISMAS
+#  tablas del tier que usa la tienda: el NPC nunca vende libros
+#  mejores que los normales, solo otra vía de acceso.
+#
+#  Los trades tienen usos limitados y NUNCA se reabastecen:
+#  agotado el stock hay que invocar otro NPC o usar refresh.
+# ============================================================
+
+trader:
+  name: "<gradient:#7B2CBF:#C77DFF>✦ Encantador Errante ✦</gradient>"
+
+  # Stock por tier:
+  #   count     = cuántos libros distintos ofrece de ese tier
+  #   level-max = nivel máximo que puede salir (limitado por el max del encanto)
+  #   uses      = compras disponibles por trade (sin restock)
+  #   price     = ingredientes (máximo 2 materiales, cantidades 1-64;
+  #               el precio escala con el nivel del libro)
+  stock:
+    comun:
+      count: 3
+      level-max: 2
+      uses: 8
+      price:
+        EMERALD: 8
+    raro:
+      count: 3
+      level-max: 2
+      uses: 5
+      price:
+        EMERALD: 24
+    legendario:
+      count: 2
+      level-max: 1
+      uses: 2
+      price:
+        EMERALD: 48
+        DIAMOND: 4
+    mitico:
+      count: 1
+      level-max: 1
+      uses: 1
+      price:
+        EMERALD: 64
+        NETHERITE_SCRAP: 2
+    # divino: fuera del comercio a propósito
+    # (solo mercado negro, fusión de libros o admin give)
+
+  # Polvos y esencias de apoyo (stock fijo, usos limitados)
+  dusts:
+    - id: polvo_menor
+      amount: 1
+      uses: 6
+      price:
+        EMERALD: 6
+    - id: esencia_menor
+      amount: 1
+      uses: 6
+      price:
+        EMERALD: 10

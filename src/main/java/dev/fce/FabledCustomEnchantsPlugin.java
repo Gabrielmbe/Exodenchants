@@ -17,15 +17,15 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     private static final String[] ENCHANT_FILES = {
             // Comun
             "llamarada", "vigor", "paso_ligero", "desgarro", "cegar", "veta", "topo",
-            "caparazon", "aguante", "amortiguar", "flecha_helada",
+            "caparazon", "aguante", "amortiguar", "flecha_helada", "marchitar", "vertigo",
             // Raro
             "vampirismo", "congelacion", "toxina", "aturdir", "sangrado", "furia",
-            "desarme", "fortuna_arcana", "contragolpe", "tiro_certero",
+            "desarme", "fortuna_arcana", "contragolpe", "tiro_certero", "gravedad", "quebranto",
             // Legendario
-            "zeus", "colosal", "verdugo", "sismo", "barrena", "bastion", "titan",
+            "zeus", "colosal", "verdugo", "sismo", "barrena", "bastion", "titan", "pulso_vital",
             // Mitico
             "carniceria", "absolucion", "tormenta", "avaricia", "berserker", "inmortal",
-            "sombra", "ejecucion", "vendaval", "cazador",
+            "sombra", "ejecucion", "vendaval", "cazador", "hambruna",
             // Divino
             "apocalipsis", "juicio_final", "renacer", "egida", "voragine", "alma_negra",
             "corazon_estelar", "minero_divino", "furia_titanica", "arco_celestial",
@@ -66,6 +66,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     private AdminInspectListener inspector;
     private FusionListener fusion;
     private RecycleListener recycler;
+    private TraderManager trader;
     private dev.fce.security.AntiDupeListener antiDupe;
 
     @Override
@@ -99,6 +100,8 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         fusion.load();
         recycler = new RecycleListener(this);
         recycler.load();
+        trader = new TraderManager(this);
+        trader.load();
 
         getServer().getPluginManager().registerEvents(new DragAndDropListener(this), this);
         // Racha de suerte visible: pinta el bono de pity en el lore del libro
@@ -116,6 +119,8 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(effects, this);
         getServer().getPluginManager().registerEvents(toolMechanics, this);
         getServer().getPluginManager().registerEvents(combos, this);
+        // Encantador Errante: proteccion del NPC de trades
+        getServer().getPluginManager().registerEvents(trader, this);
         antiDupe = dev.fce.security.AntiDupeListener.register(this);
         combos.start();
         hookPlaceholders();
@@ -154,6 +159,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
         saveIfAbsent("modules/black_market.yml");
         saveIfAbsent("modules/fusion.yml");
         saveIfAbsent("modules/recycle.yml");
+        saveIfAbsent("modules/trader.yml");
         saveIfAbsent("pools/tiers.yml");
         saveIfAbsent("books/libro_encantamiento.yml");
         for (String id : ENCHANT_FILES) saveIfAbsent("enchants/" + id + ".yml");
@@ -197,6 +203,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
                 combos.load();
                 fusion.load();
                 recycler.load();
+                trader.load();
                 stats.load();
                 if (antiDupe != null) antiDupe.reload();
                 player.sendMessage("FabledCustomEnchants: configuracion recargada ("
@@ -261,6 +268,33 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
             }
             case "polvos", "dusts" -> {
                 menus.open(player, "dust_shop");
+                return true;
+            }
+            case "trader", "aldeano" -> {
+                if (!player.hasPermission("fce.admin")) {
+                    messages.send(player, "no-permission");
+                    return true;
+                }
+                String action = args.length >= 2 ? args[1].toLowerCase(Locale.ROOT) : "spawn";
+                switch (action) {
+                    case "spawn" -> {
+                        trader.spawn(player);
+                        player.sendMessage("Encantador Errante invocado con stock aleatorio.");
+                    }
+                    case "remove", "quitar" -> {
+                        int removed = trader.removeNearby(player, 6);
+                        player.sendMessage(removed > 0
+                                ? "Encantadores eliminados: " + removed
+                                : "No hay ningun Encantador Errante cerca (6 bloques).");
+                    }
+                    case "refresh", "stock" -> {
+                        boolean ok = trader.refreshNearby(player, 6);
+                        player.sendMessage(ok
+                                ? "Stock del Encantador renovado."
+                                : "No hay ningun Encantador Errante cerca (6 bloques).");
+                    }
+                    default -> player.sendMessage("Uso: /" + label + " trader [spawn | remove | refresh]");
+                }
                 return true;
             }
             case "dust" -> {
@@ -330,7 +364,7 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
             default -> {
                 player.sendMessage("Uso: /" + label
                         + " [catalogo | categorias | polvos | mercado | top | combos | fusion | reciclar"
-                        + " | inspect | check | debug | reload"
+                        + " | inspect | check | debug | reload | trader <spawn|remove|refresh>"
                         + " | give <enchant> <nivel> [exito] [ruptura] | dust <polvo> [cantidad]]");
                 return true;
             }
@@ -362,4 +396,5 @@ public final class FabledCustomEnchantsPlugin extends JavaPlugin {
     public ToolMechanicsListener tools()    { return toolMechanics; }
     public FusionListener fusion()          { return fusion; }
     public RecycleListener recycler()       { return recycler; }
+    public TraderManager trader()           { return trader; }
 }

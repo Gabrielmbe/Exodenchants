@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/vertigo.yml — Vértigo
+# ============================================================
+
+id: vertigo
+enabled: true
+
+display-name: "Vértigo"
+tier: comun
+max-level: 2
+icon: PUFFERFISH
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gray>Vértigo {nivel_romano}"
+
+description:
+  - "<gray>Probabilidad de marear a tu objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>12% + 6%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Duración: <white>3s + 1s</white> <gray>por nivel"
+
+fabled-skill: ""
+sync-level-with-skill: false
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 12
+  chance-scale: 6
+  actions:
+    - type: potion
+      target: victim
+      value: Nausea
+      amplifier: 0
+      seconds-base: 3
+      seconds-scale: 1

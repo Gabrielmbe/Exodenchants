@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/quebranto.yml — Quebranto
+# ============================================================
+
+id: quebranto
+enabled: true
+
+display-name: "Quebranto"
+tier: raro
+max-level: 3
+icon: FERMENTED_SPIDER_EYE
+
+applicable-to:
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Quebranto {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de debilitar los golpes del objetivo."
+  - "<dark_gray>│ <gray>Probabilidad: <white>10% + 5%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Debilidad II: <white>2s + 1s</white> <gray>por nivel"
+
+fabled-skill: ""
+sync-level-with-skill: false
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 10
+  chance-scale: 5
+  actions:
+    - type: potion
+      target: victim
+      value: Weakness
+      amplifier: 1
+      seconds-base: 2
+      seconds-scale: 1

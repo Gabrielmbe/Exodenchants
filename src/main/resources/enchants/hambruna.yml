@@ -1,0 +1,47 @@
+# ============================================================
+#  enchants/hambruna.yml — Hambruna
+# ============================================================
+
+id: hambruna
+enabled: true
+
+display-name: "Hambruna"
+tier: mitico
+max-level: 2
+icon: ROTTEN_FLESH
+
+applicable-to:
+  - SWORD
+  - AXE
+
+conflicts: []
+
+lore-line: "<gradient:#F72585:#B5179E>Hambruna {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de agotar al objetivo: hambre voraz"
+  - "<gray>y debilidad en sus golpes."
+  - "<dark_gray>│ <gray>Probabilidad: <white>18% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Hambre IV: <white>4s + 2s</white> <gray>por nivel"
+
+fabled-skill: ""
+sync-level-with-skill: false
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 18
+  chance-scale: 4
+  actions:
+    - type: potion
+      target: victim
+      value: Hunger
+      amplifier: 3
+      seconds-base: 4
+      seconds-scale: 2
+    - type: potion
+      target: victim
+      value: Weakness
+      amplifier: 0
+      seconds-base: 2
+      seconds-scale: 1

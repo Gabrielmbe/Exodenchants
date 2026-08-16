@@ -1,0 +1,39 @@
+# ============================================================
+#  enchants/gravedad.yml — Gravedad
+# ============================================================
+
+id: gravedad
+enabled: true
+
+display-name: "Gravedad"
+tier: raro
+max-level: 3
+icon: SHULKER_SHELL
+
+applicable-to:
+  - SWORD
+
+conflicts: []
+
+lore-line: "<gradient:#7B2CBF:#C77DFF>Gravedad {nivel_romano}</gradient>"
+
+description:
+  - "<gray>Probabilidad de elevar al objetivo por los aires."
+  - "<dark_gray>│ <gray>Probabilidad: <white>8% + 4%</white> <gray>por nivel"
+  - "<dark_gray>│ <gray>Levitación: <white>1s + 0.5s</white> <gray>por nivel"
+
+fabled-skill: ""
+sync-level-with-skill: false
+
+# --- Efecto nativo (motor propio: no depende de Fabled) ---
+effects:
+  trigger: attack
+  chance-base: 8
+  chance-scale: 4
+  actions:
+    - type: potion
+      target: victim
+      value: Levitation
+      amplifier: 0
+      seconds-base: 1
+      seconds-scale: 0.5
